@@ -1,19 +1,28 @@
 package com.groupTuAnh.controller;
 
-import com.groupTuAnh.model.User;
-import com.groupTuAnh.service.AuthService;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.groupTuAnh.enums.UserRole;
+import com.groupTuAnh.model.User;
+import com.groupTuAnh.service.AuthService;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
 
     @PostMapping("/login")
     public String login(HttpSession session,
@@ -23,7 +32,14 @@ public class AuthController {
         try {
             User user = authService.authenticate(username, password);
             session.setAttribute("userId", user.getUserId());
-            return "redirect:/home";
+
+            if(user.getRole().equals(UserRole.READER)){
+                return "redirect:/home";
+
+            }
+            else{
+                return "redirect:/dashboard";
+            }
 
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
@@ -37,9 +53,4 @@ public class AuthController {
         return "redirect:/login?logout=true";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("title", "Dashboard - Thư viện số HSF302");
-        return "dashboard";
-    }
 }

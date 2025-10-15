@@ -1,9 +1,11 @@
 package com.groupTuAnh.service;
 
+import org.springframework.stereotype.Service;
+
 import com.groupTuAnh.model.User;
 import com.groupTuAnh.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
