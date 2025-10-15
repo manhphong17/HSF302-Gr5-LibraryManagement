@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.groupTuAnh.enums.UserRole;
-import com.groupTuAnh.model.User;
+import com.groupTuAnh.model.Account;
 import com.groupTuAnh.service.AuthService;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,8 +30,8 @@ public class AuthController {
                         @RequestParam String password,
                         Model model) {
         try {
-            User user = authService.authenticate(username, password);
-            session.setAttribute("userId", user.getUserId());
+            Account user = authService.authenticate(username, password);
+            session.setAttribute("userId", user.getAccountId());
 
             if(user.getRole().equals(UserRole.READER)){
                 return "redirect:/home";

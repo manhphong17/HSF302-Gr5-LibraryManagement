@@ -20,12 +20,12 @@ public class BorrowRecord {
     private Long recordId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "reader_id")
     private Reader reader;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @JoinColumn(name = "book_item_id")
+    private BookItem bookItem;
 
     private LocalDate borrowDate;
 
@@ -35,6 +35,6 @@ public class BorrowRecord {
 
     private boolean isReturned = false;
 
-    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
-    private List<Penalty> penalties = new ArrayList<>();
+    @OneToOne(mappedBy = "record", cascade = CascadeType.ALL)
+    private Penalty penalty;
 }

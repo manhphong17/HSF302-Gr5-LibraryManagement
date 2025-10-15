@@ -1,114 +1,169 @@
--- =============================================
--- LIBRARY MANAGEMENT SYSTEM - TEST DATA
--- =============================================
+-- Seed authors
+INSERT INTO authors (name) VALUES ('J.K. Rowling');
+INSERT INTO authors (name) VALUES ('George Orwell');
 
--- 1. INSERT USERS
-INSERT INTO users (user_id, username, password, role, active) VALUES
-(1, 'admin', 'admin123', 'MANAGER', true),
-(2, 'reader001', 'reader123', 'READER', true),
-(3, 'reader002', 'reader456', 'READER', true);
+-- Seed categories
+INSERT INTO categories (name) VALUES ('Fantasy');
+INSERT INTO categories (name) VALUES ('Dystopian');
 
--- 2. INSERT USER PROFILES
-INSERT INTO user_profiles (user_id, name, phone, address, avatar) VALUES
-(1, 'Nguyễn Văn Admin', '0123456789', '123 Đường ABC, Quận 1, TP.HCM', 'admin.jpg'),
-(2, 'Trần Thị Sinh Viên', '0987654321', '456 Đường XYZ, Quận 2, TP.HCM', 'student1.jpg'),
-(3, 'Lê Văn Học Sinh', '0369258147', '789 Đường DEF, Quận 3, TP.HCM', 'student2.jpg');
+-- Seed books
+INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('Harry Potter and the Sorcerer''s Stone', 10, false);
+INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('1984', 5, false);
 
--- 3. INSERT MANAGERS
-INSERT INTO managers (user_id, name, employee_id) VALUES
-(1, 'Nguyễn Văn Admin', 'EMP001');
+-- Link books with authors
+INSERT INTO book_authors (book_id, author_id)
+SELECT b.book_id, a.author_id FROM books b JOIN authors a ON 1=1
+WHERE b.title = 'Harry Potter and the Sorcerer''s Stone' AND a.name = 'J.K. Rowling';
 
--- 4. INSERT MEMBERSHIP PACKAGES
-INSERT INTO membership_packages (package_id, name, price, max_books_per_month) VALUES
-(1, 'Gói Cơ Bản', 50000, 3),
-(2, 'Gói Tiêu Chuẩn', 100000, 5),
-(3, 'Gói Cao Cấp', 200000, 10);
+INSERT INTO book_authors (book_id, author_id)
+SELECT b.book_id, a.author_id FROM books b JOIN authors a ON 1=1
+WHERE b.title = '1984' AND a.name = 'George Orwell';
 
--- 5. INSERT READERS
-INSERT INTO readers (user_id, balance, debt, student_id, membership_package_id) VALUES
-(2, 150000, 0, 'SV001', 2),
-(3, 50000, 0, 'SV002', 1);
+-- Link books with categories
+INSERT INTO book_categories (book_id, category_id)
+SELECT b.book_id, c.category_id FROM books b JOIN categories c ON 1=1
+WHERE b.title = 'Harry Potter and the Sorcerer''s Stone' AND c.name = 'Fantasy';
 
--- 6. INSERT AUTHORS
-INSERT INTO authors (author_id, name) VALUES
-(1, 'Robert C. Martin'),
-(2, 'Joshua Bloch'),
-(3, 'Martin Fowler'),
-(4, 'Eric Evans'),
-(5, 'Nguyễn Văn Tác Giả');
+INSERT INTO book_categories (book_id, category_id)
+SELECT b.book_id, c.category_id FROM books b JOIN categories c ON 1=1
+WHERE b.title = '1984' AND c.name = 'Dystopian';
 
--- 7. INSERT CATEGORIES
-INSERT INTO categories (category_id, name) VALUES
-(1, 'Lập Trình'),
-(2, 'Khoa Học'),
-(3, 'Văn Học'),
-(4, 'Kinh Tế'),
-(5, 'Lịch Sử');
+-- Seed book items
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('HP-', LPAD(b.book_id, 4, '0'), '-001'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'Harry Potter and the Sorcerer''s Stone';
 
--- 8. INSERT BOOKS
-INSERT INTO books (book_id, title, stock_quantity) VALUES
-(1, 'Clean Code', 5),
-(2, 'Effective Java', 3),
-(3, 'Refactoring', 4),
-(4, 'Domain-Driven Design', 2),
-(5, 'Truyện Kiều', 10),
-(6, 'Lịch Sử Việt Nam', 8);
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('HP-', LPAD(b.book_id, 4, '0'), '-002'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'Harry Potter and the Sorcerer''s Stone';
 
--- 9. INSERT BOOK_AUTHORS
-INSERT INTO book_authors (book_id, author_id) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 5);
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('NINETEEN84-', LPAD(b.book_id, 4, '0'), '-001'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = '1984';
 
--- 10. INSERT BOOK_CATEGORIES (Many-to-Many relationship)
-INSERT INTO book_categories (book_id, category_id) VALUES
-(1, 1), -- Clean Code -> Lập Trình
-(2, 1), -- Effective Java -> Lập Trình
-(3, 1), -- Refactoring -> Lập Trình
-(4, 1), -- Domain-Driven Design -> Lập Trình
-(5, 3), -- Truyện Kiều -> Văn Học
-(6, 5), -- Lịch Sử Việt Nam -> Lịch Sử
--- Example of books with multiple categories
-(1, 2), -- Clean Code -> Khoa Học (also)
-(2, 2); -- Effective Java -> Khoa Học (also)
+-- More seed authors
+INSERT INTO authors (name) VALUES ('J.R.R. Tolkien');
+INSERT INTO authors (name) VALUES ('Harper Lee');
+INSERT INTO authors (name) VALUES ('Suzanne Collins');
+INSERT INTO authors (name) VALUES ('Dan Brown');
 
--- 11. INSERT PENALTY RATES
-INSERT INTO penalty_rates (id, effective_date, fine_per_day) VALUES
-(1, '2024-01-01', 5000.0),
-(2, '2024-06-01', 7000.0),
-(3, '2024-12-01', 10000.0);
+-- More seed categories
+INSERT INTO categories (name) VALUES ('Classic');
+INSERT INTO categories (name) VALUES ('Science Fiction');
+INSERT INTO categories (name) VALUES ('Adventure');
+INSERT INTO categories (name) VALUES ('Thriller');
 
--- 12. INSERT BORROW RECORDS
-INSERT INTO borrow_records (record_id, user_id, book_id, borrow_date, due_date, return_date, is_returned) VALUES
-(1, 2, 1, '2024-01-15', '2024-01-22', '2024-01-20', true),
-(2, 2, 2, '2024-01-20', '2024-01-27', '2024-01-30', true),
-(3, 2, 3, '2024-02-01', '2024-02-08', '2024-02-15', true),
-(4, 2, 4, '2024-02-10', '2024-02-17', NULL, false),
-(5, 3, 5, '2024-01-25', '2024-02-01', '2024-02-05', true),
-(6, 3, 6, '2024-02-05', '2024-02-12', NULL, false);
+-- More seed books
+INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('The Hobbit', 8, false);
+INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('To Kill a Mockingbird', 7, false);
+INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('Animal Farm', 6, false);
+INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('The Hunger Games', 12, false);
+INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('The Da Vinci Code', 9, false);
 
--- 13. INSERT PENALTIES
-INSERT INTO penalties (penalty_id, record_id, user_id, rate_id, total_fine, is_paid, fine_snapshot) VALUES
-(1, 2, 2, 1, 15000.0, false, 5000.0),
-(2, 3, 2, 1, 35000.0, false, 5000.0),
-(3, 5, 3, 1, 20000.0, false, 5000.0);
+-- Link new books with authors
+INSERT INTO book_authors (book_id, author_id)
+SELECT b.book_id, a.author_id FROM books b JOIN authors a ON 1=1
+WHERE b.title = 'The Hobbit' AND a.name = 'J.R.R. Tolkien';
 
--- 14. INSERT TRANSACTIONS
-INSERT INTO transactions (transaction_id, user_id, manager_id, type, amount, date, description) VALUES
-(1, 2, 1, 'DEPOSIT', 200000, '2024-01-01', 'Nạp tiền vào tài khoản'),
-(2, 3, 1, 'DEPOSIT', 100000, '2024-01-01', 'Nạp tiền vào tài khoản'),
-(3, 2, 1, 'MEMBERSHIP', 100000, '2024-01-01', 'Mua gói Tiêu Chuẩn'),
-(4, 3, 1, 'MEMBERSHIP', 50000, '2024-01-01', 'Mua gói Cơ Bản'),
-(5, 2, 1, 'PENALTY', 15000, '2024-01-30', 'Thanh toán phạt trả muộn record 2'),
-(6, 2, 1, 'PENALTY', 35000, '2024-02-15', 'Thanh toán phạt trả muộn record 3'),
-(7, 3, 1, 'PENALTY', 20000, '2024-02-05', 'Thanh toán phạt trả muộn record 5');
+INSERT INTO book_authors (book_id, author_id)
+SELECT b.book_id, a.author_id FROM books b JOIN authors a ON 1=1
+WHERE b.title = 'To Kill a Mockingbird' AND a.name = 'Harper Lee';
 
--- 15. UPDATE READER BALANCE & DEBT
-UPDATE readers SET balance = balance - 15000 - 35000, debt = 0 WHERE user_id = 2;
-UPDATE readers SET balance = balance - 20000, debt = 0 WHERE user_id = 3;
+INSERT INTO book_authors (book_id, author_id)
+SELECT b.book_id, a.author_id FROM books b JOIN authors a ON 1=1
+WHERE b.title = 'Animal Farm' AND a.name = 'George Orwell';
 
--- 16. UPDATE PENALTIES AS PAID
-UPDATE penalties SET is_paid = true WHERE penalty_id IN (1, 2, 3);
+INSERT INTO book_authors (book_id, author_id)
+SELECT b.book_id, a.author_id FROM books b JOIN authors a ON 1=1
+WHERE b.title = 'The Hunger Games' AND a.name = 'Suzanne Collins';
+
+INSERT INTO book_authors (book_id, author_id)
+SELECT b.book_id, a.author_id FROM books b JOIN authors a ON 1=1
+WHERE b.title = 'The Da Vinci Code' AND a.name = 'Dan Brown';
+
+-- Link new books with categories
+INSERT INTO book_categories (book_id, category_id)
+SELECT b.book_id, c.category_id FROM books b JOIN categories c ON 1=1
+WHERE b.title = 'The Hobbit' AND c.name IN ('Fantasy', 'Adventure', 'Classic');
+
+INSERT INTO book_categories (book_id, category_id)
+SELECT b.book_id, c.category_id FROM books b JOIN categories c ON 1=1
+WHERE b.title = 'To Kill a Mockingbird' AND c.name IN ('Classic');
+
+INSERT INTO book_categories (book_id, category_id)
+SELECT b.book_id, c.category_id FROM books b JOIN categories c ON 1=1
+WHERE b.title = 'Animal Farm' AND c.name IN ('Dystopian', 'Classic');
+
+INSERT INTO book_categories (book_id, category_id)
+SELECT b.book_id, c.category_id FROM books b JOIN categories c ON 1=1
+WHERE b.title = 'The Hunger Games' AND c.name IN ('Dystopian', 'Science Fiction', 'Adventure');
+
+INSERT INTO book_categories (book_id, category_id)
+SELECT b.book_id, c.category_id FROM books b JOIN categories c ON 1=1
+WHERE b.title = 'The Da Vinci Code' AND c.name IN ('Thriller');
+
+-- More book items for each new book
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('HOB-', LPAD(b.book_id, 4, '0'), '-001'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'The Hobbit';
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('HOB-', LPAD(b.book_id, 4, '0'), '-002'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'The Hobbit';
+
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('TKAM-', LPAD(b.book_id, 4, '0'), '-001'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'To Kill a Mockingbird';
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('TKAM-', LPAD(b.book_id, 4, '0'), '-002'), b.book_id, 'BORROWED' FROM books b WHERE b.title = 'To Kill a Mockingbird';
+
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('AF-', LPAD(b.book_id, 4, '0'), '-001'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'Animal Farm';
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('AF-', LPAD(b.book_id, 4, '0'), '-002'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'Animal Farm';
+
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('THG-', LPAD(b.book_id, 4, '0'), '-001'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'The Hunger Games';
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('THG-', LPAD(b.book_id, 4, '0'), '-002'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'The Hunger Games';
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('THG-', LPAD(b.book_id, 4, '0'), '-003'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'The Hunger Games';
+
+INSERT INTO book_items (bar_code, book_id, status)
+SELECT CONCAT('TDVC-', LPAD(b.book_id, 4, '0'), '-001'), b.book_id, 'AVAILABLE' FROM books b WHERE b.title = 'The Da Vinci Code';
+
+-- Membership packages
+INSERT INTO membership_packages (name, price, max_books_per_month) VALUES ('Basic', 0, 3);
+INSERT INTO membership_packages (name, price, max_books_per_month) VALUES ('Premium', 99000, 10);
+INSERT INTO membership_packages (name, price, max_books_per_month) VALUES ('Student', 49000, 6);
+
+-- Penalty policies
+INSERT INTO penalty_policies (effective_date, fine_per_day) VALUES ('2024-01-01', 2000);
+INSERT INTO penalty_policies (effective_date, fine_per_day) VALUES ('2025-01-01', 3000);
+
+-- Seed accounts for testing (added back)
+INSERT INTO accounts (username, password, role, active) VALUES ('admin', '000000', 'LIBRIAN', true);
+INSERT INTO accounts (username, password, role, active) VALUES ('librarian2', '123456', 'LIBRIAN', true);
+INSERT INTO accounts (username, password, role, active) VALUES ('reader', '000000', 'READER', true);
+INSERT INTO accounts (username, password, role, active) VALUES ('reader2', '123456', 'READER', true);
+
+-- Seed user profiles mapped to accounts
+INSERT INTO user_profiles (account_id, name, phone, address, avatar)
+SELECT a.account_id, 'Thủ thư 1', '0900000001', 'Hồ Chí Minh', NULL FROM accounts a WHERE a.username = 'admin';
+INSERT INTO user_profiles (account_id, name, phone, address, avatar)
+SELECT a.account_id, 'Thủ thư 2', '0900000002', 'Hà Nội', NULL FROM accounts a WHERE a.username = 'librarian2';
+INSERT INTO user_profiles (account_id, name, phone, address, avatar)
+SELECT a.account_id, 'Bạn đọc 1', '0910000001', 'Đà Nẵng', NULL FROM accounts a WHERE a.username = 'reader';
+INSERT INTO user_profiles (account_id, name, phone, address, avatar)
+SELECT a.account_id, 'Bạn đọc 2', '0910000002', 'Cần Thơ', NULL FROM accounts a WHERE a.username = 'reader2';
+
+-- Seed subclass rows for JOINED inheritance
+-- Librarians
+INSERT INTO librarians (account_id, name, staff_code)
+SELECT a.account_id, 'Librarian One', 'LB001' FROM accounts a WHERE a.username = 'admin';
+INSERT INTO librarians (account_id, name, staff_code)
+SELECT a.account_id, 'Librarian Two', 'LB002' FROM accounts a WHERE a.username = 'librarian2';
+
+-- Readers (associate Student and Basic packages)
+INSERT INTO readers (account_id, balance, debt, student_code, membership_package_id)
+SELECT a.account_id, 0, 0, 'SV001', mp.package_id
+FROM accounts a LEFT JOIN membership_packages mp ON mp.name = 'Basic'
+WHERE a.username = 'reader';
+
+INSERT INTO readers (account_id, balance, debt, student_code, membership_package_id)
+SELECT a.account_id, 0, 0, 'SV002', mp.package_id
+FROM accounts a LEFT JOIN membership_packages mp ON mp.name = 'Student'
+WHERE a.username = 'reader2';

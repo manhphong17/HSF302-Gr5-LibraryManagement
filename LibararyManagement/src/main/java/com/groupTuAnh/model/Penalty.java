@@ -1,7 +1,19 @@
 package com.groupTuAnh.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "penalties")
@@ -15,21 +27,24 @@ public class Penalty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long penaltyId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "record_id")
     private BorrowRecord record;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "reader_id")
     private Reader reader;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rate_id")
-    private PenaltyRate penaltyRate;
+    @JoinColumn(name = "policy_id")
+    private PenaltyPolicy penaltyPolicy;
 
     private double totalFine;
 
+    @Builder.Default
     private boolean isPaid = false;
 
     private double fineSnapshot;
+
+    private int totalDaysLate;
 }

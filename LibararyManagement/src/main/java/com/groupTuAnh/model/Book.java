@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,8 +42,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    @Builder.Default
-    private List<Author> authors = new ArrayList<>();
+    private List<Author> authors;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
@@ -50,7 +50,11 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    @Builder.Default
-    private List<Category> categories = new ArrayList<>();
+    private List<Category> categories;
+
+    private boolean isDeleted =  false;
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    private List<BookItem> bookItems;
 
 }

@@ -12,13 +12,13 @@ import lombok.*;
 @Builder
 public class UserProfile {
     @Id
-    @Column(name = "user_id")
-    private Long userID;
+    @Column(name = "account_id")
+    private Long accountId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     private String name;
 
