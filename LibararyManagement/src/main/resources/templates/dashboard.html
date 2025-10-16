@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Librarian Dashboard - Thư viện</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -16,12 +16,10 @@
             --danger-color: #ef4444;
             --info-color: #3b82f6;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
-
         .sidebar {
             background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
             height: 100vh;
@@ -32,7 +30,6 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
-
         .sidebar .nav-link {
             color: #94a3b8;
             padding: 12px 20px;
@@ -40,124 +37,84 @@
             margin: 5px 10px;
             transition: all 0.3s ease;
         }
-
         .sidebar .nav-link:hover, .sidebar .nav-link.active {
             color: white;
             background: rgba(37, 99, 235, 0.2);
             border-left: 4px solid var(--primary-color);
         }
-
         .main-content {
             margin-left: 260px;
             padding: 20px;
             min-height: 100vh;
         }
-
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
-
         .card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-
         .card-header {
             background: white;
             border-radius: 12px 12px 0 0 !important;
             border-bottom: 1px solid #e2e8f0;
         }
-
         .btn-primary {
             background: var(--primary-color);
             border: none;
             border-radius: 8px;
             padding: 10px 20px;
         }
-
-        .btn-success {
-            background: var(--success-color);
-            border: none;
-        }
-
-        .btn-warning {
-            background: var(--warning-color);
-            border: none;
-        }
-
-        .btn-danger {
-            background: var(--danger-color);
-            border: none;
-        }
-
+        .btn-success { background: var(--success-color); border: none; }
+        .btn-warning { background: var(--warning-color); border: none; }
+        .btn-danger { background: var(--danger-color); border: none; }
         .status-badge {
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 500;
         }
-
-        .overdue {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .borrowing {
-            background: #dbeafe;
-            color: #2563eb;
-        }
-
-        .returned {
-            background: #d1fae5;
-            color: #059669;
-        }
-
+        .overdue { background: #fee2e2; color: #dc2626; }
+        .borrowing { background: #dbeafe; color: #2563eb; }
+        .returned { background: #d1fae5; color: #059669; }
         .nav-tabs .nav-link {
             border: none;
             border-radius: 8px 8px 0 0;
             margin-right: 5px;
         }
-
         .nav-tabs .nav-link.active {
             background: var(--primary-color);
             color: white;
         }
-
         .modal-header {
             border-bottom: 1px solid #e2e8f0;
         }
-
         .form-control, .form-select {
             border-radius: 8px;
             border: 1px solid #d1d5db;
             padding: 10px 12px;
         }
-
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
         }
-
         .table {
             background: white;
             border-radius: 8px;
             overflow: hidden;
         }
-
         .table thead th {
             background: #f8fafc;
             border: none;
             font-weight: 600;
             color: #374151;
         }
-
         .table tbody td {
             vertical-align: middle;
             border-color: #e5e7eb;
         }
-
         .stats-card {
             background: white;
             border-radius: 12px;
@@ -165,25 +122,20 @@
             text-align: center;
             transition: transform 0.3s ease;
         }
-
         .stats-card:hover {
             transform: translateY(-5px);
         }
-
         .stats-number {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 5px;
         }
-
         .search-box {
             position: relative;
         }
-
         .search-box .form-control {
             padding-right: 40px;
         }
-
         .search-box .search-icon {
             position: absolute;
             right: 12px;
@@ -191,22 +143,20 @@
             transform: translateY(-50%);
             color: #9ca3af;
         }
-
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
-
             .main-content {
                 margin-left: 0;
             }
-
             .sidebar.show {
                 transform: translateX(0);
             }
         }
     </style>
 </head>
+
 <body>
 <!-- Sidebar -->
 <div th:replace="~{sidebar :: sidebar}"></div>
@@ -222,7 +172,7 @@
                 <i class="fas fa-search search-icon"></i>
             </div>
             <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     <i class="fas fa-user-circle me-1"></i> Librarian
                 </button>
                 <ul class="dropdown-menu">
@@ -274,26 +224,22 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-primary w-100" data-bs-target="#addBookModal"
-                                            data-bs-toggle="modal">
+                                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addBookModal">
                                         <i class="fas fa-book me-1"></i>Thêm sách
                                     </button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-success w-100" data-bs-target="#confirmBorrowModal"
-                                            data-bs-toggle="modal">
+                                    <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#confirmBorrowModal">
                                         <i class="fas fa-hand-holding me-1"></i>Xác nhận mượn
                                     </button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-info w-100" data-bs-target="#membershipUpgradeModal"
-                                            data-bs-toggle="modal">
+                                    <button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#membershipUpgradeModal">
                                         <i class="fas fa-user-plus me-1"></i>Nâng cấp thành viên
                                     </button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-warning w-100" data-bs-target="#createPenaltyModal"
-                                            data-bs-toggle="modal">
+                                    <button class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#createPenaltyModal">
                                         <i class="fas fa-file-invoice me-1"></i>Tạo phiếu phạt
                                     </button>
                                 </div>
@@ -307,7 +253,7 @@
                             <h6 class="mb-0"><i class="fas fa-chart-bar me-2 text-info"></i>Thống kê mượn sách</h6>
                         </div>
                         <div class="card-body">
-                            <canvas height="200" id="borrowingChart"></canvas>
+                            <canvas id="borrowingChart" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -344,7 +290,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-book me-2"></i>Quản lý sách</h5>
-                    <button class="btn btn-primary" data-bs-target="#addBookModal" data-bs-toggle="modal">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBookModal">
                         <i class="fas fa-plus me-1"></i>Thêm sách mới
                     </button>
                 </div>
@@ -398,7 +344,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="mb-0"><i class="fas fa-tags me-2"></i>Quản lý thể loại</h5>
-                    <button class="btn btn-primary" data-bs-target="#addCategoryModal" data-bs-toggle="modal">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
                         <i class="fas fa-plus me-1"></i>Thêm thể loại
                     </button>
                 </div>
@@ -425,40 +371,90 @@
             </div>
         </div>
 
-        <!-- Borrowing/Return Tab -->
-        <div class="tab-pane fade" id="borrowing">
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#borrowing-tab">Xác nhận mượn</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#return-tab">Xác nhận trả</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <div id="borrowing-tab">
-                        <form class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Mã độc giả</label>
-                                <input class="form-control" placeholder="Nhập mã độc giả" type="text">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Mã sách</label>
-                                <input class="form-control" placeholder="Nhập mã sách" type="text">
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-success" type="submit">
-                                    <i class="fas fa-check me-1"></i>Xác nhận mượn
-                                </button>
-                            </div>
-                        </form>
+            <!-- Borrowing/Return Tab -->
+            <div class="tab-pane" id="borrowing">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#borrowing-tab" id="link-borrow">Xác nhận mượn</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#return-tab" id="link-return">Xác nhận trả</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div id="borrowing-tab">
+                            <div th:replace="~{borrow/form :: borrowForm}"></div>
+                        </div>
+                        <div id="return-tab" class="mt-4" style="display:none;">
+                            <div th:replace="~{borrow/form :: returnForm}"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const linkBorrow = document.getElementById('link-borrow');
+                    const linkReturn = document.getElementById('link-return');
+                    const paneBorrow = document.getElementById('borrowing-tab');
+                    const paneReturn = document.getElementById('return-tab');
+
+                    function showBorrow() {
+                        linkBorrow.classList.add('active');
+                        linkReturn.classList.remove('active');
+                        paneBorrow.style.display = '';
+                        paneReturn.style.display = 'none';
+                    }
+                    function showReturn() {
+                        linkReturn.classList.add('active');
+                        linkBorrow.classList.remove('active');
+                        paneBorrow.style.display = 'none';
+                        paneReturn.style.display = '';
+                    }
+
+                    linkBorrow && linkBorrow.addEventListener('click', e => { e.preventDefault(); showBorrow(); });
+                    linkReturn && linkReturn.addEventListener('click', e => { e.preventDefault(); showReturn(); });
+
+                    // Mở đúng tab theo anchor sau redirect
+                    if (location.hash === '#return') showReturn();
+                    else showBorrow();
+                });
+                // === ĐOẠN JS ĐIỀU HƯỚNG BORROW/RETURN ===
+                document.addEventListener('DOMContentLoaded', function () {
+                    const linkBorrow = document.getElementById('link-borrow');
+                    const linkReturn = document.getElementById('link-return');
+                    const paneBorrow = document.getElementById('borrowing-tab');
+                    const paneReturn = document.getElementById('return-tab');
+
+                    function showBorrow() {
+                        linkBorrow.classList.add('active');
+                        linkReturn.classList.remove('active');
+                        paneBorrow.style.display = '';
+                        paneReturn.style.display = 'none';
+                    }
+                    function showReturn() {
+                        linkReturn.classList.add('active');
+                        linkBorrow.classList.remove('active');
+                        paneBorrow.style.display = 'none';
+                        paneReturn.style.display = '';
+                    }
+
+                    linkBorrow && linkBorrow.addEventListener('click', e => { e.preventDefault(); showBorrow(); });
+                    linkReturn && linkReturn.addEventListener('click', e => { e.preventDefault(); showReturn(); });
+
+                    if (location.hash === '#borrow' || location.hash === '#return') {
+                        if (typeof showTab === 'function') showTab('borrowing');
+                    }
+
+                    if (location.hash === '#return') showReturn();
+                    else if (location.hash === '#borrow') showBorrow();
+                    else showBorrow();
+                });
+            </script>
 
         <!-- Overdue Tab -->
         <div class="tab-pane fade" id="overdue">
@@ -499,8 +495,7 @@
                                 </td>
                                 <td>50,000đ</td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" data-bs-target="#createPenaltyModal"
-                                            data-bs-toggle="modal">
+                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#createPenaltyModal">
                                         <i class="fas fa-file-invoice"></i>
                                     </button>
                                 </td>
@@ -543,8 +538,7 @@
                                 </td>
                                 <td>10/10/2025</td>
                                 <td>
-                                    <button class="btn btn-sm btn-success" data-bs-target="#payFineModal"
-                                            data-bs-toggle="modal">
+                                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#payFineModal">
                                         <i class="fas fa-money-bill"></i>
                                     </button>
                                 </td>
@@ -556,6 +550,54 @@
             </div>
         </div>
 
+        <!-- Membership Tab -->
+        <div class="tab-pane fade" id="membership">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Nâng cấp gói thành viên</h6>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Mã độc giả</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Gói thành viên</label>
+                                    <select class="form-select">
+                                        <option>Advance (10 sách/tháng - 20,000đ)</option>
+                                        <option>Premium (Không giới hạn - 100,000đ)</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Xác nhận nâng cấp</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Nạp tiền tài khoản</h6>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Mã độc giả</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Số tiền nạp</label>
+                                    <input type="number" class="form-control" placeholder="VNĐ">
+                                </div>
+                                <button type="submit" class="btn btn-success">Nạp tiền</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Transactions Tab -->
         <div class="tab-pane fade" id="transactions">
@@ -603,24 +645,24 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="fas fa-book me-2"></i>Thêm sách mới</h5>
-                <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tiêu đề sách *</label>
-                            <input class="form-control" required type="text">
+                            <input type="text" class="form-control" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">ISBN</label>
-                            <input class="form-control" type="text">
+                            <input type="text" class="form-control">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tác giả *</label>
                             <div class="input-group">
-                                <input class="form-control" id="authorInput" type="text">
-                                <button class="btn btn-outline-primary" id="addAuthorBtn" type="button">
+                                <input type="text" class="form-control" id="authorInput">
+                                <button class="btn btn-outline-primary" type="button" id="addAuthorBtn">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -635,11 +677,11 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Số lượng tồn kho *</label>
-                            <input class="form-control" min="0" required type="number">
+                            <input type="number" class="form-control" min="0" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nhà xuất bản</label>
-                            <input class="form-control" type="text">
+                            <input type="text" class="form-control">
                         </div>
                         <div class="col-12 mb-3">
                             <label class="form-label">Mô tả</label>
@@ -649,8 +691,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Hủy</button>
-                <button class="btn btn-primary" type="button">Thêm sách</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary">Thêm sách</button>
             </div>
         </div>
     </div>
@@ -675,7 +717,7 @@
                     <div class="mb-3">
                         <label class="form-label">Xác nhận thanh toán</label>
                         <div class="form-check">
-                            <input class="form-check-input" id="paymentConfirm" type="checkbox">
+                            <input class="form-check-input" type="checkbox" id="paymentConfirm">
                             <label class="form-check-label" for="paymentConfirm">
                                 Đã nhận tiền tại quầy
                             </label>
@@ -723,12 +765,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Sidebar toggle for mobile
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const sidebar = document.querySelector('.sidebar');
         const navLinks = document.querySelectorAll('.nav-link');
 
         navLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
+            link.addEventListener('click', function(e) {
                 e.preventDefault();
                 navLinks.forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
@@ -749,7 +791,7 @@
         });
 
         // Add Author functionality
-        document.getElementById('addAuthorBtn').addEventListener('click', function () {
+        document.getElementById('addAuthorBtn').addEventListener('click', function() {
             const authorName = document.getElementById('authorInput').value;
             if (authorName && confirm(`Thêm tác giả "${authorName}"?`)) {
                 // Add author logic here
