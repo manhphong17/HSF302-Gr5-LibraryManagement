@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ReaderRepository extends JpaRepository<Reader, Long> {
 
     Optional<Reader> findByStudentCode(String studentCode);
+
+    Optional<Reader> findByAccountId(Long accountId);
 }

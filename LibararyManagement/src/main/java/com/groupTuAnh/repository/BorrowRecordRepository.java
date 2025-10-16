@@ -1,6 +1,8 @@
 package com.groupTuAnh.repository;
 
+import com.groupTuAnh.model.BookItem;
 import com.groupTuAnh.model.BorrowRecord;
+import com.groupTuAnh.model.Reader;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +27,7 @@ List<BorrowRecord> findOverdueRecords(LocalDate today);
             @Param("isReturned") Boolean isReturned
     );
 
+    long countByReaderAndIsReturnedFalse(Reader reader);
+
+    boolean existsByBookItemAndIsReturnedFalse(BookItem bookItem);
 }

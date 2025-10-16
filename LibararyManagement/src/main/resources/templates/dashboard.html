@@ -16,10 +16,12 @@
             --danger-color: #ef4444;
             --info-color: #3b82f6;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
+
         .sidebar {
             background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
             height: 100vh;
@@ -30,6 +32,7 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
+
         .sidebar .nav-link {
             color: #94a3b8;
             padding: 12px 20px;
@@ -42,25 +45,30 @@
             background: rgba(37, 99, 235, 0.2);
             border-left: 4px solid var(--primary-color);
         }
+
         .main-content {
             margin-left: 260px;
             padding: 20px;
             min-height: 100vh;
         }
+
         .card {
             border: none;
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
+
         .card:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
+
         .card-header {
             background: white;
             border-radius: 12px 12px 0 0 !important;
             border-bottom: 1px solid #e2e8f0;
         }
+
         .btn-primary {
             background: var(--primary-color);
             border: none;
@@ -84,6 +92,7 @@
             border-radius: 8px 8px 0 0;
             margin-right: 5px;
         }
+
         .nav-tabs .nav-link.active {
             background: var(--primary-color);
             color: white;
@@ -100,21 +109,25 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
         }
+
         .table {
             background: white;
             border-radius: 8px;
             overflow: hidden;
         }
+
         .table thead th {
             background: #f8fafc;
             border: none;
             font-weight: 600;
             color: #374151;
         }
+
         .table tbody td {
             vertical-align: middle;
             border-color: #e5e7eb;
         }
+
         .stats-card {
             background: white;
             border-radius: 12px;
@@ -122,20 +135,25 @@
             text-align: center;
             transition: transform 0.3s ease;
         }
+
         .stats-card:hover {
             transform: translateY(-5px);
         }
+
         .stats-number {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 5px;
         }
+
         .search-box {
             position: relative;
         }
+
         .search-box .form-control {
             padding-right: 40px;
         }
+
         .search-box .search-icon {
             position: absolute;
             right: 12px;
@@ -143,19 +161,23 @@
             transform: translateY(-50%);
             color: #9ca3af;
         }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
+
             .main-content {
                 margin-left: 0;
             }
+
             .sidebar.show {
                 transform: translateX(0);
             }
         }
     </style>
 </head>
+
 <body>
 <!-- Sidebar -->
 <div class="sidebar d-flex flex-column p-3">
@@ -403,40 +425,90 @@
             </div>
         </div>
 
-        <!-- Borrowing/Return Tab -->
-        <div class="tab-pane fade" id="borrowing">
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#borrowing-tab">Xác nhận mượn</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#return-tab">Xác nhận trả</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <div id="borrowing-tab">
-                        <form class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Mã độc giả</label>
-                                <input type="text" class="form-control" placeholder="Nhập mã độc giả">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Mã sách</label>
-                                <input type="text" class="form-control" placeholder="Nhập mã sách">
-                            </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-check me-1"></i>Xác nhận mượn
-                                </button>
-                            </div>
-                        </form>
+            <!-- Borrowing/Return Tab -->
+            <div class="tab-pane" id="borrowing">
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#borrowing-tab" id="link-borrow">Xác nhận mượn</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#return-tab" id="link-return">Xác nhận trả</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div id="borrowing-tab">
+                            <div th:replace="~{borrow/form :: borrowForm}"></div>
+                        </div>
+                        <div id="return-tab" class="mt-4" style="display:none;">
+                            <div th:replace="~{borrow/form :: returnForm}"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const linkBorrow = document.getElementById('link-borrow');
+                    const linkReturn = document.getElementById('link-return');
+                    const paneBorrow = document.getElementById('borrowing-tab');
+                    const paneReturn = document.getElementById('return-tab');
+
+                    function showBorrow() {
+                        linkBorrow.classList.add('active');
+                        linkReturn.classList.remove('active');
+                        paneBorrow.style.display = '';
+                        paneReturn.style.display = 'none';
+                    }
+                    function showReturn() {
+                        linkReturn.classList.add('active');
+                        linkBorrow.classList.remove('active');
+                        paneBorrow.style.display = 'none';
+                        paneReturn.style.display = '';
+                    }
+
+                    linkBorrow && linkBorrow.addEventListener('click', e => { e.preventDefault(); showBorrow(); });
+                    linkReturn && linkReturn.addEventListener('click', e => { e.preventDefault(); showReturn(); });
+
+                    // Mở đúng tab theo anchor sau redirect
+                    if (location.hash === '#return') showReturn();
+                    else showBorrow();
+                });
+                // === ĐOẠN JS ĐIỀU HƯỚNG BORROW/RETURN ===
+                document.addEventListener('DOMContentLoaded', function () {
+                    const linkBorrow = document.getElementById('link-borrow');
+                    const linkReturn = document.getElementById('link-return');
+                    const paneBorrow = document.getElementById('borrowing-tab');
+                    const paneReturn = document.getElementById('return-tab');
+
+                    function showBorrow() {
+                        linkBorrow.classList.add('active');
+                        linkReturn.classList.remove('active');
+                        paneBorrow.style.display = '';
+                        paneReturn.style.display = 'none';
+                    }
+                    function showReturn() {
+                        linkReturn.classList.add('active');
+                        linkBorrow.classList.remove('active');
+                        paneBorrow.style.display = 'none';
+                        paneReturn.style.display = '';
+                    }
+
+                    linkBorrow && linkBorrow.addEventListener('click', e => { e.preventDefault(); showBorrow(); });
+                    linkReturn && linkReturn.addEventListener('click', e => { e.preventDefault(); showReturn(); });
+
+                    if (location.hash === '#borrow' || location.hash === '#return') {
+                        if (typeof showTab === 'function') showTab('borrowing');
+                    }
+
+                    if (location.hash === '#return') showReturn();
+                    else if (location.hash === '#borrow') showBorrow();
+                    else showBorrow();
+                });
+            </script>
 
         <!-- Overdue Tab -->
         <div class="tab-pane fade" id="overdue">
@@ -806,4 +878,5 @@
     });
 </script>
 </body>
+
 </html>
