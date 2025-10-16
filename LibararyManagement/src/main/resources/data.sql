@@ -7,8 +7,11 @@ INSERT INTO categories (name) VALUES ('Fantasy');
 INSERT INTO categories (name) VALUES ('Dystopian');
 
 -- Seed books
-INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('Harry Potter and the Sorcerer''s Stone', 10, false);
-INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('1984', 5, false);
+INSERT INTO books (title, price, stock_quantity, is_deleted)
+VALUES ('Harry Potter and the Sorcerer''s Stone', 150000, 10, false);
+
+INSERT INTO books (title, price, stock_quantity, is_deleted)
+VALUES ('1984', 90000, 5, false);
 
 -- Link books with authors
 INSERT INTO book_authors (book_id, author_id)
@@ -51,11 +54,21 @@ INSERT INTO categories (name) VALUES ('Adventure');
 INSERT INTO categories (name) VALUES ('Thriller');
 
 -- More seed books
-INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('The Hobbit', 8, false);
-INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('To Kill a Mockingbird', 7, false);
-INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('Animal Farm', 6, false);
-INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('The Hunger Games', 12, false);
-INSERT INTO books (title, stock_quantity, is_deleted) VALUES ('The Da Vinci Code', 9, false);
+INSERT INTO books (title, price, stock_quantity, is_deleted)
+ VALUES ('The Hobbit', 120000, 8, false);
+
+INSERT INTO books (title, price, stock_quantity, is_deleted)
+VALUES ('To Kill a Mockingbird', 95000, 7, false);
+
+INSERT INTO books (title, price, stock_quantity, is_deleted)
+VALUES ('Animal Farm', 80000, 6, false);
+
+INSERT INTO books (title, price, stock_quantity, is_deleted)
+VALUES ('The Hunger Games', 110000, 12, false);
+
+INSERT INTO books (title, price, stock_quantity, is_deleted)
+VALUES ('The Da Vinci Code', 130000, 9, false);
+
 
 -- Link new books with authors
 INSERT INTO book_authors (book_id, author_id)
@@ -131,8 +144,10 @@ INSERT INTO membership_packages (name, price, max_books_per_month) VALUES ('Prem
 INSERT INTO membership_packages (name, price, max_books_per_month) VALUES ('Student', 49000, 6);
 
 -- Penalty policies
-INSERT INTO penalty_policies (effective_date, fine_per_day) VALUES ('2024-01-01', 2000);
-INSERT INTO penalty_policies (effective_date, fine_per_day) VALUES ('2025-01-01', 3000);
+INSERT INTO penalty_policies (effective_date, fine_per_day, lost_book_fine_rate, type)
+VALUES
+    ('2025-01-01', 5000, NULL, 'OVERDUE'),
+    ('2025-01-01', NULL, 1.5, 'LOST');
 
 -- Seed accounts for testing (added back)
 INSERT INTO accounts (username, password, role, active) VALUES ('admin', '000000', 'LIBRIAN', true);
@@ -157,6 +172,8 @@ SELECT a.account_id, 'Librarian One', 'LB001' FROM accounts a WHERE a.username =
 INSERT INTO librarians (account_id, name, staff_code)
 SELECT a.account_id, 'Librarian Two', 'LB002' FROM accounts a WHERE a.username = 'librarian2';
 
+DELETE FROM readers WHERE account_id = 3;
+
 -- Readers (associate Student and Basic packages)
 INSERT INTO readers (account_id, balance, debt, student_code, membership_package_id)
 SELECT a.account_id, 0, 0, 'SV001', mp.package_id
@@ -167,3 +184,14 @@ INSERT INTO readers (account_id, balance, debt, student_code, membership_package
 SELECT a.account_id, 0, 0, 'SV002', mp.package_id
 FROM accounts a LEFT JOIN membership_packages mp ON mp.name = 'Student'
 WHERE a.username = 'reader2';
+
+
+INSERT INTO borrow_records
+(borrow_date, due_date, is_returned, return_date, book_item_id, reader_id)
+VALUES
+    ( '2025-09-25', '2025-10-01', FALSE, NULL, 1, 3),
+    ( '2025-09-26', '2025-10-02', FALSE, NULL, 2, 3),
+    ( '2025-09-27', '2025-10-03', FALSE, NULL, 3, 3),
+    ('2025-09-28', '2025-10-04', FALSE, NULL, 4, 4),
+    ('2025-09-29', '2025-10-05', FALSE, NULL, 5, 4),
+    ( '2025-09-30', '2025-10-06', FALSE, NULL, 6, 3);

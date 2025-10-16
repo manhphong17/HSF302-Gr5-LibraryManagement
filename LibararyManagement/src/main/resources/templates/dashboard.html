@@ -69,16 +69,7 @@
         }
         .btn-success { background: var(--success-color); border: none; }
         .btn-warning { background: var(--warning-color); border: none; }
-        .btn-danger { background: var(--danger-color); border: none; }
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        .overdue { background: #fee2e2; color: #dc2626; }
-        .borrowing { background: #dbeafe; color: #2563eb; }
-        .returned { background: #d1fae5; color: #059669; }
+
         .nav-tabs .nav-link {
             border: none;
             border-radius: 8px 8px 0 0;
@@ -154,6 +145,27 @@
                 transform: translateX(0);
             }
         }
+
+        .overdue-table {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        .overdue-table th {
+            background-color: #2563eb !important;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+        }
+        .overdue-table td {
+            padding: 10px 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .overdue-table tr:hover {
+            background-color: #f1f5f9;
+        }
     </style>
 </head>
 <body>
@@ -177,8 +189,8 @@
         <a class="nav-link" href="#borrowing" data-bs-toggle="pill">
             <i class="fas fa-hand-holding me-2"></i>Mượn/Trả sách
         </a>
-        <a class="nav-link" href="#overdue" data-bs-toggle="pill">
-            <i class="fas fa-exclamation-triangle me-2"></i>Sách quá hạn
+        <a class="nav-link" href="/overdue-records">
+            <i class="fas fa-exclamation-triangle me-2"></i>Đơn mượn quá hạn
         </a>
         <a class="nav-link" href="#penalties" data-bs-toggle="pill">
             <i class="fas fa-file-invoice-dollar me-2"></i>Phiếu phạt
@@ -438,47 +450,44 @@
         </div>
 
         <!-- Overdue Tab -->
-        <div class="tab-pane fade" id="overdue">
+        <div class="tab-pane fade" id="overdue-records">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Sách quá hạn</h5>
-                    <div class="d-flex gap-2">
-                        <select class="form-select form-select-sm">
-                            <option>Lọc theo độc giả</option>
-                        </select>
-                        <select class="form-select form-select-sm">
-                            <option>Lọc theo sách</option>
-                        </select>
-                    </div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2 text-warning"></i>📚 Danh sách Mượn Quá Hạn</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+                        <table class="table table-hover overdue-table">
+                            <thead class="table-primary text-center">
                             <tr>
-                                <th>Độc giả</th>
-                                <th>Sách</th>
-                                <th>Ngày mượn</th>
-                                <th>Ngày đến hạn</th>
-                                <th>Số ngày trễ</th>
-                                <th>Tiền phạt</th>
-                                <th>Hành động</th>
+                                <th>ID</th>
+                                <th>Tên Sách</th>
+                                <th>Người Mượn</th>
+                                <th>Ngày Mượn</th>
+                                <th>Ngày Hết Hạn</th>
+                                <th>Số Ngày Trễ</th>
+                                <th>Tiền phạt/ngày</th>
+                                <th>Tổng Tiền Phạt</th>
+                                <th>Trạng Thái</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Nguyễn Văn A</td>
-                                <td>Lập trình Java</td>
-                                <td>01/10/2025</td>
-                                <td>15/10/2025</td>
+                            <tr th:if="${overdueRecords.isEmpty()}">
+                                <td colspan="9" class="text-center text-muted">Không có đơn mượn nào quá hạn</td>
+                            </tr>
+
+                            <tr th:each="r : ${overdueRecords}" class="text-center">
+                                <td th:text="${r.recordId}"></td>
+                                <td th:text="${r.bookTitle}"></td>
+                                <td th:text="${r.readerName}"></td>
+                                <td th:text="${r.borrowDate}"></td>
+                                <td th:text="${r.dueDate}"></td>
+                                <td th:text="${r.daysLate}"></td>
+                                <td th:text="${#numbers.formatDecimal(r.fineSnapsShot, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                                <td th:text="${#numbers.formatDecimal(r.totalFine, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
                                 <td>
-                                    <span class="badge bg-warning text-dark">5 ngày</span>
-                                </td>
-                                <td>50,000đ</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#createPenaltyModal">
-                                        <i class="fas fa-file-invoice"></i>
-                                    </button>
+                <span th:classappend="${r.paid} ? 'badge bg-success' : 'badge bg-danger'"
+                      th:text="${r.paid} ? 'Đã Thanh Toán' : 'Chưa Thanh Toán'"></span>
                                 </td>
                             </tr>
                             </tbody>
