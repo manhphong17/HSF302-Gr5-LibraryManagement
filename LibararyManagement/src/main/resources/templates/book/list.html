@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a, button {
+            text-decoration: none;
+        }
+
+        .btn {
+            padding: 4px 8px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h2>All Books</h2>
+
+<a th:href="@{/books/create}" class="btn">+ Add New Book</a>
+<br><br>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Stock Quantity</th>
+        <th>Categories</th>
+        <th>Authors</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="b : ${books}">
+        <td th:text="${b.bookId}"></td>
+        <td th:text="${b.title}"></td>
+        <td th:text="${b.stockQuantity}"></td>
+
+        <td>
+          <span th:each="c, iter : ${b.categories}">
+              <span th:text="${c.name}"></span><span th:text="${!iter.last ? ', ' : ''}"></span>
+          </span>
+        </td>
+
+        <td>
+          <span th:each="a, iter : ${b.authors}">
+              <span th:text="${a.name}"></span><span th:text="${!iter.last ? ', ' : ''}"></span>
+          </span>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
