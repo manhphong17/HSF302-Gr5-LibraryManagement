@@ -1,10 +1,5 @@
 package com.groupTuAnh.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.groupTuAnh.dto.BookDTO;
 import com.groupTuAnh.dto.BookSearchRequest;
 import com.groupTuAnh.enums.BookItemStatus;
@@ -14,6 +9,10 @@ import com.groupTuAnh.model.BookItem;
 import com.groupTuAnh.model.Category;
 import com.groupTuAnh.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -25,6 +24,7 @@ public class BookService {
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
     private final SearchRepository searchRepository;
+    private final ReaderRepository readerRepository;
 
     // create book
     public Book createBook(BookDTO dto) {
@@ -143,7 +143,6 @@ public class BookService {
     }
 
 
-
     public List<Book> searchBooksForReader(BookSearchRequest request) {
         return searchRepository.searchBooksForReader(
                 request.getKeyword(),
@@ -151,4 +150,6 @@ public class BookService {
                 request.getSortBy()
         );
     }
+
+
 }

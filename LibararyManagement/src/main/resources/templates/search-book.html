@@ -183,7 +183,7 @@
             <div class="row align-items-center">
                 <div class="col-md-3">
                     <label class="form-label fw-semibold">Thể loại:</label>
-                    <select class="form-select" name="categoryName" onchange="this.form.submit()" th:value="${param.categoryName}">
+                    <select class="form-select" name="categoryName" th:value="${param.categoryName}">
                         <option value="">Tất cả thể loại</option>
                         <option value="Fantasy" th:selected="${param.categoryName=='Fantasy'}">Fantasy</option>
                         <option value="Dystopian" th:selected="${param.categoryName=='Dystopian'}">Dystopian</option>
@@ -195,7 +195,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label fw-semibold">Sắp xếp:</label>
-                    <select class="form-select" name="sortBy" onchange="this.form.submit()" th:value="${param.sortBy}">
+                    <select class="form-select" name="sortBy" th:value="${param.sortBy}">
                         <option value="title:asc" th:selected="${param.sortBy=='title:asc'}">Tên A-Z</option>
                         <option value="title:desc" th:selected="${param.sortBy=='title:desc'}">Tên Z-A</option>
                         <option value="stockQuantity:desc" th:selected="${param.sortBy=='stockQuantity:desc'}">Kho giảm dần</option>
