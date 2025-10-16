@@ -5,13 +5,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.groupTuAnh.enums.PenaltyType;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,14 +24,22 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PenaltyPolicy implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    LocalDate effectiveDate;
+    // Ngày chính sách bắt đầu có hiệu lực
+    private LocalDate effectiveDate;
 
-    Double finePerDay;
+    // Phạt trễ hạn (tính theo ngày)
+    private Double finePerDay;
+
+    // Phạt mất sách (tỉ lệ % giá sách)
+    private Double lostBookFineRate;
+
+    // Kiểu phạt (LOST hoặc OVERDUE)
+    @Enumerated(EnumType.STRING)
+    private PenaltyType type;
 
     @OneToMany(mappedBy = "penaltyPolicy", cascade = CascadeType.ALL)
     private List<Penalty> penalties;

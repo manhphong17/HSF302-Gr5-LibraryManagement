@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách mượn quá hạn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .status {
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        .unpaid {
+            background-color: #e74c3c;
+        }
+        .paid {
+            background-color: #2ecc71;
+        }
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #28a745;
+        }
+        button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>📚 Danh sách Mượn Quá Hạn</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên Sách</th>
+            <th>Người Mượn</th>
+            <th>Ngày Mượn</th>
+            <th>Ngày Hết Hạn</th>
+            <th>Số Ngày Trễ</th>
+            <th>Tiền phạt/ngày</th>
+            <th>Tổng Tiền Phạt</th>
+            <th>Trạng Thái</th>
+            <th>Thao tác</th> <!-- ✅ thêm cột mới -->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${overdueRecords.isEmpty()}">
+            <td colspan="10">Không có đơn mượn nào quá hạn</td>
+        </tr>
+
+        <tr th:each="r : ${overdueRecords}">
+            <td th:text="${r.recordId}"></td>
+            <td th:text="${r.bookTitle}"></td>
+            <td th:text="${r.readerName}"></td>
+            <td th:text="${r.borrowDate}"></td>
+            <td th:text="${r.dueDate}"></td>
+            <td th:text="${r.daysLate}"></td>
+            <td th:text="${#numbers.formatDecimal(r.fineSnapShot, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+            <td th:text="${#numbers.formatDecimal(r.totalFine, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+            <td>
+                <span th:classappend="${r.paid} ? 'paid' : 'unpaid'"
+                      th:text="${r.paid} ? 'Đã Thanh Toán' : 'Chưa Thanh Toán'"></span>
+            </td>
+
+
+            <td>
+                <button th:disabled="${r.paid}"
+                        th:text="${r.paid} ? 'Đã trả' : 'Trả phạt'"
+                        onclick="handlePay(this)">
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function handlePay(btn) {
+        const confirmPay = confirm("Xác nhận đánh dấu 'Đã trả phạt' cho đơn này?");
+        if (confirmPay) {
+            // sau này bạn có thể gọi fetch("/api/pay-fine", {...}) tại đây
+            alert("✅ Đã gửi yêu cầu trả phạt!");
+        }
+    }
+</script>
+
+</body>
+</html>
