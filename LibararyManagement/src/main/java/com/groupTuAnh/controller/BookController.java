@@ -1,15 +1,16 @@
 package com.groupTuAnh.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
 import com.groupTuAnh.dto.BookDTO;
 import com.groupTuAnh.repository.AuthorRepository;
 import com.groupTuAnh.repository.CategoryRepository;
 import com.groupTuAnh.service.BookService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor

@@ -256,24 +256,24 @@ WHERE a.username = 'reader2';
 
 -- Seed subclass rows for JOINED inheritance
 -- Librarians
-INSERT INTO librarians (account_id, name, staff_code)
-SELECT a.account_id, 'Librarian One', 'LB001'
+INSERT INTO librarians (account_id, staff_code)
+SELECT a.account_id, 'LB001'
 FROM accounts a
 WHERE a.username = 'admin';
-INSERT INTO librarians (account_id, name, staff_code)
-SELECT a.account_id, 'Librarian Two', 'LB002'
+INSERT INTO librarians (account_id, staff_code)
+SELECT a.account_id, 'LB002'
 FROM accounts a
 WHERE a.username = 'librarian2';
 
 -- Readers (associate Student and Basic packages)
 INSERT INTO readers (account_id, balance, debt, student_code, membership_package_id, start_date, exp_membership)
-SELECT a.account_id, 0, 0, 'SV001', mp.package_id, DATE '2025-10-16', DATE '2025-10-23'
+SELECT a.account_id, 0.0, 0.0, 'SV001', mp.package_id, '2025-10-16', '2025-10-23'
 FROM accounts a
          LEFT JOIN membership_packages mp ON mp.name = 'Basic'
 WHERE a.username = 'reader';
 
 INSERT INTO readers (account_id, balance, debt, student_code, membership_package_id, start_date, exp_membership)
-SELECT a.account_id, 0, 0, 'SV002', mp.package_id, DATE '2025-10-16', DATE '2025-10-23'
+SELECT a.account_id, 0.0, 0.0, 'SV002', mp.package_id, '2025-10-16', '2025-10-23'
 FROM accounts a
          LEFT JOIN membership_packages mp ON mp.name = 'Student'
 WHERE a.username = 'reader2';
