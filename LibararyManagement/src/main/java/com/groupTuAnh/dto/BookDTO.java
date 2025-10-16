@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class BookDTO {
+    private Long bookId;
     private String title;
     private int stockQuantity;
     private List<Long> authorIds;
