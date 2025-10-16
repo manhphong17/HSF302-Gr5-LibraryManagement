@@ -1,16 +1,15 @@
 package com.groupTuAnh.controller;
 
-import com.groupTuAnh.dto.BookDTO;
-import com.groupTuAnh.repository.AuthorRepository;
-import com.groupTuAnh.repository.CategoryRepository;
-import com.groupTuAnh.service.BookService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import com.groupTuAnh.dto.BookDTO;
+import com.groupTuAnh.service.BookService;
+import com.groupTuAnh.service.AuthorService;
+import com.groupTuAnh.service.CategoryService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BookController {
 
     private final BookService bookService;
-    private final AuthorRepository authorRepository;
-    private final CategoryRepository categoryRepository;
+    private final AuthorService authorService;
+    private final CategoryService categoryService;
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("bookDTO", new BookDTO());
-        model.addAttribute("authors", authorRepository.findAll());
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("authors", authorService.getAllAuthors());
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "book/create";
     }
 
@@ -37,15 +36,59 @@ public class BookController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("bookDTO", bookDTO);
-            model.addAttribute("authors", authorRepository.findAll());
-            model.addAttribute("categories", categoryRepository.findAll());
+            model.addAttribute("authors", authorService.getAllAuthors());
+            model.addAttribute("categories", categoryService.getAllCategories());
             return "book/create";
         }
     }
 
+    // Display list of all books
     @GetMapping("/list")
     public String listBooks(Model model) {
         model.addAttribute("books", bookService.getAllBooks());
         return "book/list";
     }
+
+    // Display the edit form for a specific book
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        BookDTO bookDTO = bookService.getBookById(id);
+        model.addAttribute("bookDTO", bookDTO);
+        model.addAttribute("authors", authorService.getAllAuthors());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "book/edit";
+    }
+
+    // Handle book update
+    @PostMapping("/update")
+    public String updateBook(@ModelAttribute("bookDTO") BookDTO bookDTO, Model model) {
+        try {
+            bookService.updateBook(bookDTO);
+            model.addAttribute("successMessage", "Book updated successfully!");
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("authors", authorService.getAllAuthors());
+            model.addAttribute("bookDTO", bookService.getBookById(bookDTO.getBookId()));
+            return "book/edit";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Update failed: " + e.getMessage());
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("authors", authorService.getAllAuthors());
+            return "book/edit";
+        }
+    }
+
+    // Soft delete
+    @GetMapping("/delete/{id}")
+    public String deleteBook(@PathVariable Long id) {
+        bookService.softDeleteBook(id);
+        return "redirect:/books/list";
+    }
+
+    // Restore soft-deleted book
+    @GetMapping("/restore/{id}")
+    public String restoreBook(@PathVariable Long id) {
+        bookService.restoreBook(id);
+        return "redirect:/books/list";
+    }
+
 }
