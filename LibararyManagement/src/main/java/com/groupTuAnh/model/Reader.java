@@ -1,14 +1,11 @@
 package com.groupTuAnh.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "readers")
@@ -28,6 +25,10 @@ public class Reader extends Account {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "membership_package_id")
     private MembershipPackage membership;
+
+    private LocalDate startDate = LocalDate.now();
+    private LocalDate expMembership = LocalDate.now();
+
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
