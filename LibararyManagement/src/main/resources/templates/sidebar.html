@@ -1,0 +1,35 @@
+<!-- Sidebar -->
+<div class="sidebar d-flex flex-column p-3" th:fragment="sidebar">
+    <div class="sidebar-header mb-4">
+        <h4 class="text-white mb-0"><i class="fas fa-book me-2"></i>Thư viện</h4>
+        <p class="text-gray-400 mb-0 small">Librarian Dashboard</p>
+    </div>
+
+    <nav class="nav flex-column">
+        <a class="nav-link" href="/dashboard">
+            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </a>
+        <a class="nav-link" href="#" onclick="showTab('books')">
+            <i class="fas fa-book me-2"></i>Quản lý sách
+        </a>
+        <a class="nav-link" href="#" onclick="showTab('categories')">
+            <i class="fas fa-tags me-2"></i>Thể loại
+        </a>
+        <a class="nav-link" href="#" onclick="showTab('borrowing')">
+            <i class="fas fa-hand-holding me-2"></i>Mượn/Trả sách
+        </a>
+        <a class="nav-link" href="#" onclick="showTab('overdue')">
+            <i class="fas fa-exclamation-triangle me-2"></i>Sách quá hạn
+        </a>
+        <a class="nav-link" href="#" onclick="showTab('penalties')">
+            <i class="fas fa-file-invoice-dollar me-2"></i>Phiếu phạt
+        </a>
+        <a class="nav-link" href="/memberships"
+        >
+            <i class="fas fa-user-plus me-2"></i>Quản lý gói thành viên
+        </a>
+        <a class="nav-link" href="#" onclick="showTab('transactions')">
+            <i class="fas fa-exchange-alt me-2"></i>Giao dịch
+        </a>
+    </nav>
+</div>

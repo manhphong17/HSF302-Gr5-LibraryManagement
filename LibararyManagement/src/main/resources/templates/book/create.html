@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Book</title>
+</head>
+<body>
+
+<h2>Add New Book</h2>
+
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red;"></p>
+
+<form th:action="@{/books/create}" th:object="${bookDTO}" method="post">
+
+    <!-- Title -->
+    <label>Title:</label>
+    <input type="text" th:field="*{title}" placeholder="Enter book title" required/><br><br>
+
+    <!-- Stock -->
+    <label>Stock Quantity:</label>
+    <input type="number" th:field="*{stockQuantity}" min="1" placeholder="Number of copies" required/><br><br>
+
+    <!-- Categories (giữ nguyên checkbox) -->
+    <h4>Categories:</h4>
+    <div th:each="c : ${categories}">
+        <label>
+            <input type="checkbox" th:value="${c.categoryId}" th:field="*{categoryIds}"/>
+            <span th:text="${c.name}"></span>
+        </label><br>
+    </div>
+    <br>
+
+    <!-- ✅ Authors: Search + chọn nhiều -->
+    <h4>Search and select authors:</h4>
+    <input type="text" id="authorSearch" placeholder="Search author..."><br>
+    <div id="authorSuggestions"></div>
+    <div id="selectedAuthors"></div>
+    <!-- input ẩn lưu danh sách id -->
+    <input type="hidden" id="authorIds" th:field="*{authorIds}"/>
+
+    <br><br>
+    <button type="submit">Save</button>
+</form>
+
+<br>
+<a th:href="@{/books/list}">Back to List</a>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const authors = /*[[${authors}]]*/ [];  // danh sách author từ controller
+    let selectedAuthors = [];
+
+    // phần tử DOM
+    const authInput = document.getElementById("authorSearch");
+    const authSuggest = document.getElementById("authorSuggestions");
+    const authSelected = document.getElementById("selectedAuthors");
+    const authIds = document.getElementById("authorIds");
+
+    // lắng nghe khi gõ tìm kiếm
+    authInput.addEventListener("input", () => {
+        const query = authInput.value.toLowerCase();
+        authSuggest.innerHTML = "";
+        if (!query) return;
+
+        // lọc tên chứa ký tự nhập vào và chưa chọn
+        const matches = authors.filter(a =>
+            a.name.toLowerCase().includes(query) &&
+            !selectedAuthors.some(s => s.id === a.authorId)
+        );
+
+        // hiển thị gợi ý
+        matches.forEach(a => {
+            const div = document.createElement("div");
+            div.textContent = a.name;
+            div.onclick = () => selectAuthor(a);
+            authSuggest.appendChild(div);
+        });
+    });
+
+    // chọn author
+    function selectAuthor(a) {
+        selectedAuthors.push({ id: a.authorId, name: a.name });
+        authInput.value = "";
+        authSuggest.innerHTML = "";
+        renderSelectedAuthors();
+    }
+
+    // xóa author đã chọn
+    function removeAuthor(id) {
+        selectedAuthors = selectedAuthors.filter(a => a.id !== id);
+        renderSelectedAuthors();
+    }
+
+    // render danh sách đã chọn
+    function renderSelectedAuthors() {
+        authSelected.innerHTML = "";
+        selectedAuthors.forEach(a => {
+            const div = document.createElement("div");
+            div.textContent = a.name + " (x)";
+            div.onclick = () => removeAuthor(a.id);
+            authSelected.appendChild(div);
+        });
+        authIds.value = selectedAuthors.map(a => a.id);
+    }
+    /*]]>*/
+</script>
+
+</body>
+</html>

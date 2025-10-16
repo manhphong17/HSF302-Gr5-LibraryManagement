@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Book</title>
+</head>
+<body>
+
+<h2>Edit Book</h2>
+
+<!-- Success / error message -->
+<p th:if="${successMessage}" th:text="${successMessage}" style="color:green;"></p>
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red;"></p>
+
+<form th:action="@{/books/update}" th:object="${bookDTO}" method="post">
+
+    <!-- Hidden book id -->
+    <input type="hidden" th:field="*{bookId}"/>
+
+    <!-- Title -->
+    <label>Title:</label>
+    <input type="text" th:field="*{title}" required/><br><br>
+
+    <!-- Stock -->
+    <label>Stock Quantity:</label>
+    <input type="number" th:field="*{stockQuantity}" min="1" required/><br><br>
+
+    <!-- Categories -->
+    <h4>Categories:</h4>
+    <div th:each="c : ${categories}">
+        <label>
+            <input type="checkbox" th:value="${c.categoryId}" th:field="*{categoryIds}"/>
+            <span th:text="${c.name}"></span>
+        </label><br>
+    </div>
+    <br>
+
+    <!-- Authors -->
+    <h4>Search and select authors:</h4>
+    <input type="text" id="authorSearch" placeholder="Search author..."><br>
+    <div id="authorSuggestions"></div>
+    <div id="selectedAuthors"></div>
+    <input type="hidden" id="authorIds" th:field="*{authorIds}"/>
+
+    <br><br>
+    <button type="submit">Update</button>
+</form>
+
+<br>
+<a th:href="@{/books/list}">Back to List</a>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const authors = /*[[${authors}]]*/ [];
+    let selectedAuthors = [];
+
+    // DOM references
+    const authInput = document.getElementById("authorSearch");
+    const authSuggest = document.getElementById("authorSuggestions");
+    const authSelected = document.getElementById("selectedAuthors");
+    const authIds = document.getElementById("authorIds");
+
+    // Initialize selected authors (already linked to book)
+    const existingAuthors = /*[[${bookDTO.authorIds}]]*/ [];
+    window.onload = () => {
+        if (existingAuthors && existingAuthors.length > 0) {
+            existingAuthors.forEach(id => {
+                const author = authors.find(a => a.authorId === id);
+                if (author) selectedAuthors.push({ id: author.authorId, name: author.name });
+            });
+            renderSelectedAuthors();
+        }
+
+        // Auto refresh after success
+        const msg = /*[[${successMessage}]]*/ null;
+        if (msg) {
+            setTimeout(() => location.reload(), 2000);
+        }
+    };
+
+    // Search author
+    authInput.addEventListener("input", () => {
+        const query = authInput.value.toLowerCase();
+        authSuggest.innerHTML = "";
+        if (!query) return;
+
+        const matches = authors.filter(a =>
+            a.name.toLowerCase().includes(query) &&
+            !selectedAuthors.some(s => s.id === a.authorId)
+        );
+
+        matches.forEach(a => {
+            const div = document.createElement("div");
+            div.textContent = a.name;
+            div.onclick = () => selectAuthor(a);
+            authSuggest.appendChild(div);
+        });
+    });
+
+    // Select author
+    function selectAuthor(a) {
+        selectedAuthors.push({ id: a.authorId, name: a.name });
+        authInput.value = "";
+        authSuggest.innerHTML = "";
+        renderSelectedAuthors();
+    }
+
+    // Remove author
+    function removeAuthor(id) {
+        selectedAuthors = selectedAuthors.filter(a => a.id !== id);
+        renderSelectedAuthors();
+    }
+
+    // Render selected authors
+    function renderSelectedAuthors() {
+        authSelected.innerHTML = "";
+        selectedAuthors.forEach(a => {
+            const div = document.createElement("div");
+            div.textContent = a.name + " (x)";
+            div.onclick = () => removeAuthor(a.id);
+            authSelected.appendChild(div);
+        });
+        authIds.value = selectedAuthors.map(a => a.id);
+    }
+    /*]]>*/
+</script>
+
+</body>
+</html>
