@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@PrimaryKeyJoinColumn(name = "account_id")
 public class Reader extends Account {
     private double balance = 0.0;
 
@@ -21,12 +22,13 @@ public class Reader extends Account {
 
     private String studentCode;
 
-    private LocalDate startDate;
-    private LocalDate expMembership;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "membership_package_id")
     private MembershipPackage membership;
+
+    private LocalDate startDate = LocalDate.now();
+    private LocalDate expMembership = LocalDate.now();
+
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
