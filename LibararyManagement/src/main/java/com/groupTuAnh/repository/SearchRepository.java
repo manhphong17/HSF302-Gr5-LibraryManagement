@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.groupTuAnh.model.Book;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -162,12 +163,61 @@ public class SearchRepository {
                     .build();
         }
     }
-    
+
+    /**
+     * Search books for reader by keyword (title or author) and filter by category.
+     * Sorting format: field:asc|desc (e.g., title:asc, stockQuantity:desc). No pagination.
+     */
+    public List<Book> searchBooksForReader(String keyword, String categoryName, String sortBy) {
+        StringBuilder jpql = new StringBuilder("SELECT DISTINCT b FROM Book b ");
+        jpql.append(" LEFT JOIN b.authors a ");
+        jpql.append(" LEFT JOIN b.categories c ");
+        jpql.append(" WHERE b.isDeleted = false ");
+
+        if (StringUtils.hasText(keyword)) {
+            jpql.append(" AND (LOWER(b.title) LIKE LOWER(:kw) OR LOWER(a.name) LIKE LOWER(:kw)) ");
+        }
+
+        if (StringUtils.hasText(categoryName)) {
+            jpql.append(" AND LOWER(c.name) = LOWER(:category) ");
+        }
+
+        // Sorting
+        String orderBy = " ORDER BY b.title ASC";
+        if (StringUtils.hasText(sortBy)) {
+            Pattern pattern = Pattern.compile("(\\w+?)(:)(asc|desc)", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(sortBy);
+            if (matcher.find()) {
+                String field = matcher.group(1);
+                String direction = matcher.group(3).toUpperCase();
+                if (isValidBookSortField(field)) {
+                    orderBy = String.format(" ORDER BY b.%s %s", field, direction);
+                }
+            }
+        }
+        jpql.append(orderBy);
+
+        Query q = entityManager.createQuery(jpql.toString());
+        if (StringUtils.hasText(keyword)) {
+            q.setParameter("kw", "%" + keyword + "%");
+        }
+        if (StringUtils.hasText(categoryName)) {
+            q.setParameter("category", categoryName);
+        }
+
+        List<Book> books = q.getResultList();
+        return books;
+    }
+
     /**
      * Validate sort field to prevent SQL injection
      */
     private boolean isValidSortField(String field) {
         // Only allow specific fields that exist in UserProfile
         return field != null && (field.equals("name") || field.equals("phone"));
+    }
+
+    private boolean isValidBookSortField(String field) {
+        return field != null && (field.equals("title") || field.equals("stockQuantity"));
     }
 }
