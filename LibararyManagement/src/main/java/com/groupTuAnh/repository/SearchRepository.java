@@ -100,7 +100,7 @@ public class SearchRepository {
                             .phone(r.getUserProfile().getPhone())
                             .name(r.getUserProfile().getName())
                             .code(r.getStudentCode())
-                            .expiryDate(r.getExpMembership())
+//                            .expiryDate(r.getExpMembership())
                             .balance(r.getBalance())
                             .debt(r.getDebt())
                             .build())

@@ -177,8 +177,11 @@
         <a class="nav-link" href="#borrowing" data-bs-toggle="pill">
             <i class="fas fa-hand-holding me-2"></i>Mượn/Trả sách
         </a>
-        <a class="nav-link" href="#overdue" data-bs-toggle="pill">
-            <i class="fas fa-exclamation-triangle me-2"></i>Sách quá hạn
+        <a th:href="@{/borrow-records}">>
+            <i class="fas fa-exchange-alt me-2"></i>Danh sách đơn mượn
+        </a>
+        <a th:href="@{/overdue-records}">
+            <i class="fas fa-exclamation-triangle me-2"></i>Đơn quá hạn
         </a>
         <a class="nav-link" href="#penalties" data-bs-toggle="pill">
             <i class="fas fa-file-invoice-dollar me-2"></i>Phiếu phạt
@@ -186,9 +189,7 @@
         <a class="nav-link" href="#membership" data-bs-toggle="pill">
             <i class="fas fa-user-plus me-2"></i>Quản lý thành viên
         </a>
-        <a class="nav-link" href="#transactions" data-bs-toggle="pill">
-            <i class="fas fa-exchange-alt me-2"></i>Giao dịch
-        </a>
+
     </nav>
 </div>
 

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách mượn sách</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1150px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; color: #333; }
+
+        /* Bộ lọc */
+        .filter-bar {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-bar input, .filter-bar select, .filter-bar button {
+            padding: 5px 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .filter-bar button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .filter-bar button:hover {
+            background: #0056b3;
+        }
+
+        /* Bảng */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        tr.overdue {
+            background: #ffe5e5;
+        }
+
+        /* Nút hành động */
+        .btn {
+            border: none;
+            border-radius: 5px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: white;
+        }
+        .btn-return {
+            background: #28a745;
+        }
+        .btn-return:hover {
+            background: #218838;
+        }
+        .btn-lost {
+            background: #dc3545;
+        }
+        .btn-lost:hover {
+            background: #c82333;
+        }
+        .btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .badge {
+            color: red;
+            font-weight: bold;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Danh sách mượn sách</h1>
+    <div th:if="${message}" style="color: green; font-weight: bold; text-align: center;"
+         th:text="${message}"></div>
+    <div th:if="${error}" style="color: red; font-weight: bold; text-align: center;"
+         th:text="${error}"></div>
+
+
+    <!-- Bộ lọc -->
+    <form class="filter-bar" method="get" th:action="@{/borrow-records}">
+        <label>Từ ngày:</label>
+        <input type="date" name="fromDate" th:value="${fromDate != null ? #temporals.format(fromDate, 'yyyy-MM-dd') : ''}" />
+
+        <label>Đến ngày:</label>
+        <input type="date" name="toDate" th:value="${toDate != null ? #temporals.format(toDate, 'yyyy-MM-dd') : ''}" />
+        <label>Trạng thái:</label>
+        <select name="status">
+            <option value="ALL" th:selected="${status == 'ALL'}">Tất cả</option>
+            <option value="UNRETURNED" th:selected="${status == 'UNRETURNED'}">Chưa trả</option>
+            <option value="RETURNED" th:selected="${status == 'RETURNED'}">Đã trả</option>
+        </select>
+        <button type="submit">Lọc</button>
+        <a th:href="@{/overdue-records}"
+           style="margin-left:auto;color:white;text-decoration:none;background:#17a2b8;padding:6px 10px;border-radius:5px;">
+            📘Danh Sách Đơn Mượn Quá hạn
+        </a>
+    </form>
+
+    <!-- Bảng dữ liệu -->
+    <table>
+        <thead>
+        <tr>
+            <th>Mã mượn</th>
+            <th>Mã SV</th>
+            <th>Tên sách</th>
+            <th>Barcode</th>
+            <th>Ngày mượn</th>
+            <th>Hạn trả</th>
+            <th>Ngày trả</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="r : ${borrowRecords}" >
+            <td th:text="${r.recordId}"></td>
+            <td th:text="${r.studentCode}"></td>
+            <td th:text="${r.bookTitle}"></td>
+            <td th:text="${r.barCode}"></td>
+            <td th:text="${#temporals.format(r.borrowDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#temporals.format(r.dueDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${r.returnDate != null ? #temporals.format(r.returnDate, 'dd/MM/yyyy') : '-'}"></td>
+
+            <td>
+                <span th:text="${r.returned ? 'Đã trả' : 'Chưa trả'}"></span>
+                <span class="badge" th:if="${r.overdue}">(Quá hạn)</span>
+            </td>
+            <td>
+                <form th:action="@{${r.recordId} + '/return'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-return" th:disabled="${r.returned}">Trả sách</button>
+                </form>
+<!--                <form th:action="@{${r.recordId} + '/lost'}" method="post" style="display:inline;">-->
+<!--                    <button type="submit" class="btn btn-lost" th:disabled="${r.returned}">Làm mất</button>-->
+<!--                </form>-->
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+<!--    <div class="modal">-->
+<!--        <h2>Phiếu phạt mất sách</h2>-->
+
+<!--    <div th:if="${penalty != null}">-->
+<!--        <p>Mã độc giả: [[${penalty.reader.studentCode}]]</p>-->
+<!--        <p>Tựa sách: [[${penalty.record.bookItem.book.title}]]</p>-->
+<!--        <p>Tổng tiền phạt: [[${penalty.totalFine}]] đ</p>-->
+<!--    </div>-->
+
+<!--    <div th:if="${penalty == null}">-->
+<!--        <p>Không có thông tin phạt cho bản ghi này.</p>-->
+<!--    </div>-->
+
+
+</div>
+</body>
+</html>

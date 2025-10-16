@@ -189,7 +189,7 @@ WHERE a.username = 'reader2';
 INSERT INTO borrow_records
 (borrow_date, due_date, is_returned, return_date, book_item_id, reader_id)
 VALUES
-    ( '2025-09-25', '2025-10-01', FALSE, NULL, 1, 3),
+    ( '2025-09-25', '2025-11-01', FALSE, NULL, 1, 3),
     ( '2025-09-26', '2025-10-02', FALSE, NULL, 2, 3),
     ( '2025-09-27', '2025-10-03', FALSE, NULL, 3, 3),
     ('2025-09-28', '2025-10-04', FALSE, NULL, 4, 4),
