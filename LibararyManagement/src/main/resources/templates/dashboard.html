@@ -297,10 +297,10 @@
                                         </button>
                                     </div>
                                     <div class="col-6 mb-2">
-                                        <button class="btn btn-success w-100" data-bs-target="#confirmBorrowModal"
-                                            data-bs-toggle="modal">
+                                        <a class="btn btn-success w-100" href="/dashboard#borrow">
                                             <i class="fas fa-hand-holding me-1"></i>Xác nhận mượn
-                                        </button>
+                                        </a>
+
                                     </div>
                                     <div class="col-6 mb-2">
                                         <button class="btn btn-info w-100" data-bs-target="#membershipUpgradeModal"
@@ -492,6 +492,37 @@
 
                     // Mở đúng tab theo anchor sau redirect
                     if (location.hash === '#return') showReturn();
+                    else showBorrow();
+                });
+                // === ĐOẠN JS ĐIỀU HƯỚNG BORROW/RETURN ===
+                document.addEventListener('DOMContentLoaded', function () {
+                    const linkBorrow = document.getElementById('link-borrow');
+                    const linkReturn = document.getElementById('link-return');
+                    const paneBorrow = document.getElementById('borrowing-tab');
+                    const paneReturn = document.getElementById('return-tab');
+
+                    function showBorrow() {
+                        linkBorrow.classList.add('active');
+                        linkReturn.classList.remove('active');
+                        paneBorrow.style.display = '';
+                        paneReturn.style.display = 'none';
+                    }
+                    function showReturn() {
+                        linkReturn.classList.add('active');
+                        linkBorrow.classList.remove('active');
+                        paneBorrow.style.display = 'none';
+                        paneReturn.style.display = '';
+                    }
+
+                    linkBorrow && linkBorrow.addEventListener('click', e => { e.preventDefault(); showBorrow(); });
+                    linkReturn && linkReturn.addEventListener('click', e => { e.preventDefault(); showReturn(); });
+
+                    if (location.hash === '#borrow' || location.hash === '#return') {
+                        if (typeof showTab === 'function') showTab('borrowing');
+                    }
+
+                    if (location.hash === '#return') showReturn();
+                    else if (location.hash === '#borrow') showBorrow();
                     else showBorrow();
                 });
             </script>
