@@ -1,19 +1,18 @@
 package com.groupTuAnh.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.groupTuAnh.dto.MemberShipResponse;
 import com.groupTuAnh.dto.PageResponse;
+import com.groupTuAnh.dto.ReaderDetailsResponse;
 import com.groupTuAnh.dto.ReaderSearchRequest;
 import com.groupTuAnh.exception.ResourceNotFoundException;
 import com.groupTuAnh.service.MemberShipService;
@@ -22,35 +21,50 @@ import com.groupTuAnh.service.ReaderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
+@Controller
 @RequestMapping("/memberships")
 @Slf4j
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@RequiredArgsConstructor
 public class MembershipController {
-
     private final MemberShipService memberShipService;
     private final ReaderService readerService;
 
     @GetMapping
-    public List<MemberShipResponse> getAllMemberships() {
+    public String membership(
+            Model model,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long memberShipId
+    ) {
         List<MemberShipResponse> memberShips = memberShipService.getAll();
-        log.info("memberships size: {}", memberShips.size());
-        return memberShips;
+        model.addAttribute("memberShips", memberShips);
+
+        ReaderSearchRequest req = ReaderSearchRequest.builder()
+                .keyword(keyword)
+                .memberShipId(memberShipId)
+                .pageNo(1)
+                .pageSize(1000)
+                .sortBy("name:asc")
+                .build();
+
+        PageResponse<?> page = readerService.getAllByMember(req);
+        @SuppressWarnings("unchecked")
+        List<ReaderDetailsResponse> readers = (List<ReaderDetailsResponse>) page.getItems();
+        model.addAttribute("readers", readers);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("memberShipId", memberShipId);
+        return "membership";
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> updateMembership(@RequestParam long memberShipId, @RequestParam String studentCode) {
+    public String updateMembershipForReader(@RequestParam long memberShipId, @RequestParam String studentCode, RedirectAttributes redirectAttributes) {
         try {
             memberShipService.updateMembership(studentCode, memberShipId);
-            return ResponseEntity.ok().body(Map.of("message", "Cập nhật thành công"));
+            redirectAttributes.addFlashAttribute("success", "Cập nhật thành công");
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
+        return "redirect:/memberships";
     }
 
-    @PostMapping("/search")
-    public PageResponse<?> searchReaders(@RequestBody ReaderSearchRequest request) {
-        return readerService.getAllByMember(request);
-    }
 
 }

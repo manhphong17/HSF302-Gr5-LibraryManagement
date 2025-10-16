@@ -218,7 +218,7 @@
     <div class="main-content">
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Quản lý thành viên</h2>
+            <h2 class="mb-0">Quản lý gói thành viên</h2>
             <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${success}"
                 th:text="${success}">
                 <i class="fas fa-check-circle me-2"></i>
@@ -288,7 +288,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Số tiền nạp</label>
-                                <input class="form-control" placeholder="VNĐ" type="number">
+                                <input class="form-control" min="100000" placeholder="VNĐ" type="number">
                             </div>
                             <button class="btn btn-success" type="submit">Nạp tiền</button>
                         </form>
@@ -298,15 +298,14 @@
         </div>
         <form class="row g-2 mb-3" method="get">
             <div class="col-md-3">
-                <input class="form-control" name="keyword" placeholder="Tìm theo mã..." th:value="${keyword}"
+                <input class="form-control" name="keyword" placeholder="Tìm độc giả (tên/mã/sđt)" th:value="${keyword}"
                     type="text">
             </div>
             <div class="col-md-3">
-                <select class="form-select" name="membership">
+                <select class="form-select" name="membership" th:value="${membership}">
                     <option value="">Tất cả gói</option>
-                    <option th:selected="${membership == 'Basic'}" value="Basic">Basic</option>
-                    <option th:selected="${membership == 'Standard'}" value="Standard">Standard</option>
-                    <option th:selected="${membership == 'Premium'}" value="Premium">Premium</option>
+                    <option th:each="ms : ${memberShips}" th:text="${ms.name }" th:value="${ms.id}">
+                    </option>
                 </select>
             </div>
             <div class="col-md-2">
@@ -327,32 +326,23 @@
                 </tr>
             </thead>
             <tbody class="text-center">
-                <tr>
-                    <td>R001</td>
-                    <td>Nguyễn Văn A</td>
-                    <td>0901234567</td>
-                    <td><span class="badge bg-primary">Standard</span></td>
-                    <td>10/12/2025</td>
-                    <td><span class="text-success fw-semibold">200.000</span></td>
-                    <td><span class="text-danger fw-semibold">0</span></td>
-                </tr>
-            </tbody>
-        </table>
+                <tr th:each="r : ${readers}">
+                    <td th:text="${r.code}">R001</td>
+                    <td th:text="${r.name}">Tên</td>
+                    <td th:text="${r.phone}">SĐT</td>
+                    <td>
+                        <span class="badge bg-primary" th:text="${r.memberShipName}">Gói</span>
+                    </td>
+                    <td th:text="${r.expiryDate != null ? #temporals.format(r.expiryDate, 'dd/MM/yyyy') : '-'}">-</td>
+                    <td><span class="text-success fw-semibold" th:text="${#numbers.formatDecimal(r.balance, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+                    <td><span class="text-danger fw-semibold" th:text="${#numbers.formatDecimal(r.debt, 0, 'COMMA', 0, 'POINT')}">0</span></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(readers)}">
+            <td colspan="7" class="text-muted py-4">Không có độc giả phù hợp</td>
+        </tr>
+        </tbody>
+    </table>
 
-        <!-- Pagination -->
-        <nav>
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{|/readers?page=${currentPage - 1}|}">Trước</a>
-                </li>
-                <li class="page-item" th:classappend="${i == currentPage} ? 'active'" th:each="i : ${#numbers.sequence(1, totalPages)}">
-                <a class="page-link" th:href="@{|/readers?page=${i}|}" th:text="${i}">1</a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{|/readers?page=${currentPage + 1}|}">Sau</a>
-            </li>
-        </ul>
-    </nav>
 
 </div>
 

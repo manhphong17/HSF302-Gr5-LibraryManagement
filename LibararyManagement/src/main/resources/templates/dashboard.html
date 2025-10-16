@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Librarian Dashboard - Thư viện</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -16,10 +16,12 @@
             --danger-color: #ef4444;
             --info-color: #3b82f6;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
+
         .sidebar {
             background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
             height: 100vh;
@@ -30,6 +32,7 @@
             z-index: 1000;
             transition: all 0.3s ease;
         }
+
         .sidebar .nav-link {
             color: #94a3b8;
             padding: 12px 20px;
@@ -37,84 +40,124 @@
             margin: 5px 10px;
             transition: all 0.3s ease;
         }
+
         .sidebar .nav-link:hover, .sidebar .nav-link.active {
             color: white;
             background: rgba(37, 99, 235, 0.2);
             border-left: 4px solid var(--primary-color);
         }
+
         .main-content {
             margin-left: 260px;
             padding: 20px;
             min-height: 100vh;
         }
+
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
+
         .card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+
         .card-header {
             background: white;
             border-radius: 12px 12px 0 0 !important;
             border-bottom: 1px solid #e2e8f0;
         }
+
         .btn-primary {
             background: var(--primary-color);
             border: none;
             border-radius: 8px;
             padding: 10px 20px;
         }
-        .btn-success { background: var(--success-color); border: none; }
-        .btn-warning { background: var(--warning-color); border: none; }
-        .btn-danger { background: var(--danger-color); border: none; }
+
+        .btn-success {
+            background: var(--success-color);
+            border: none;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            border: none;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            border: none;
+        }
+
         .status-badge {
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 500;
         }
-        .overdue { background: #fee2e2; color: #dc2626; }
-        .borrowing { background: #dbeafe; color: #2563eb; }
-        .returned { background: #d1fae5; color: #059669; }
+
+        .overdue {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .borrowing {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .returned {
+            background: #d1fae5;
+            color: #059669;
+        }
+
         .nav-tabs .nav-link {
             border: none;
             border-radius: 8px 8px 0 0;
             margin-right: 5px;
         }
+
         .nav-tabs .nav-link.active {
             background: var(--primary-color);
             color: white;
         }
+
         .modal-header {
             border-bottom: 1px solid #e2e8f0;
         }
+
         .form-control, .form-select {
             border-radius: 8px;
             border: 1px solid #d1d5db;
             padding: 10px 12px;
         }
+
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
         }
+
         .table {
             background: white;
             border-radius: 8px;
             overflow: hidden;
         }
+
         .table thead th {
             background: #f8fafc;
             border: none;
             font-weight: 600;
             color: #374151;
         }
+
         .table tbody td {
             vertical-align: middle;
             border-color: #e5e7eb;
         }
+
         .stats-card {
             background: white;
             border-radius: 12px;
@@ -122,20 +165,25 @@
             text-align: center;
             transition: transform 0.3s ease;
         }
+
         .stats-card:hover {
             transform: translateY(-5px);
         }
+
         .stats-number {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 5px;
         }
+
         .search-box {
             position: relative;
         }
+
         .search-box .form-control {
             padding-right: 40px;
         }
+
         .search-box .search-icon {
             position: absolute;
             right: 12px;
@@ -143,13 +191,16 @@
             transform: translateY(-50%);
             color: #9ca3af;
         }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
+
             .main-content {
                 margin-left: 0;
             }
+
             .sidebar.show {
                 transform: translateX(0);
             }
@@ -158,39 +209,7 @@
 </head>
 <body>
 <!-- Sidebar -->
-<div class="sidebar d-flex flex-column p-3">
-    <div class="sidebar-header mb-4">
-        <h4 class="text-white mb-0"><i class="fas fa-book me-2"></i>Thư viện</h4>
-        <p class="text-gray-400 mb-0 small">Librarian Dashboard</p>
-    </div>
-
-    <nav class="nav flex-column">
-        <a class="nav-link active" href="#dashboard" data-bs-toggle="pill">
-            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-        </a>
-        <a class="nav-link" href="#books" data-bs-toggle="pill">
-            <i class="fas fa-book me-2"></i>Quản lý sách
-        </a>
-        <a class="nav-link" href="#categories" data-bs-toggle="pill">
-            <i class="fas fa-tags me-2"></i>Thể loại
-        </a>
-        <a class="nav-link" href="#borrowing" data-bs-toggle="pill">
-            <i class="fas fa-hand-holding me-2"></i>Mượn/Trả sách
-        </a>
-        <a class="nav-link" href="#overdue" data-bs-toggle="pill">
-            <i class="fas fa-exclamation-triangle me-2"></i>Sách quá hạn
-        </a>
-        <a class="nav-link" href="#penalties" data-bs-toggle="pill">
-            <i class="fas fa-file-invoice-dollar me-2"></i>Phiếu phạt
-        </a>
-        <a class="nav-link" href="#membership" data-bs-toggle="pill">
-            <i class="fas fa-user-plus me-2"></i>Quản lý thành viên
-        </a>
-        <a class="nav-link" href="#transactions" data-bs-toggle="pill">
-            <i class="fas fa-exchange-alt me-2"></i>Giao dịch
-        </a>
-    </nav>
-</div>
+<div th:replace="~{sidebar :: sidebar}"></div>
 
 <!-- Main Content -->
 <div class="main-content">
@@ -199,11 +218,11 @@
         <h2 class="mb-0">Dashboard</h2>
         <div class="d-flex align-items-center">
             <div class="search-box me-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                <input class="form-control" placeholder="Tìm kiếm..." type="text">
                 <i class="fas fa-search search-icon"></i>
             </div>
             <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button">
                     <i class="fas fa-user-circle me-1"></i> Librarian
                 </button>
                 <ul class="dropdown-menu">
@@ -255,22 +274,26 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addBookModal">
+                                    <button class="btn btn-primary w-100" data-bs-target="#addBookModal"
+                                            data-bs-toggle="modal">
                                         <i class="fas fa-book me-1"></i>Thêm sách
                                     </button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#confirmBorrowModal">
+                                    <button class="btn btn-success w-100" data-bs-target="#confirmBorrowModal"
+                                            data-bs-toggle="modal">
                                         <i class="fas fa-hand-holding me-1"></i>Xác nhận mượn
                                     </button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#membershipUpgradeModal">
+                                    <button class="btn btn-info w-100" data-bs-target="#membershipUpgradeModal"
+                                            data-bs-toggle="modal">
                                         <i class="fas fa-user-plus me-1"></i>Nâng cấp thành viên
                                     </button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#createPenaltyModal">
+                                    <button class="btn btn-warning w-100" data-bs-target="#createPenaltyModal"
+                                            data-bs-toggle="modal">
                                         <i class="fas fa-file-invoice me-1"></i>Tạo phiếu phạt
                                     </button>
                                 </div>
@@ -284,7 +307,7 @@
                             <h6 class="mb-0"><i class="fas fa-chart-bar me-2 text-info"></i>Thống kê mượn sách</h6>
                         </div>
                         <div class="card-body">
-                            <canvas id="borrowingChart" height="200"></canvas>
+                            <canvas height="200" id="borrowingChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -321,7 +344,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="fas fa-book me-2"></i>Quản lý sách</h5>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBookModal">
+                    <button class="btn btn-primary" data-bs-target="#addBookModal" data-bs-toggle="modal">
                         <i class="fas fa-plus me-1"></i>Thêm sách mới
                     </button>
                 </div>
@@ -375,7 +398,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="mb-0"><i class="fas fa-tags me-2"></i>Quản lý thể loại</h5>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                    <button class="btn btn-primary" data-bs-target="#addCategoryModal" data-bs-toggle="modal">
                         <i class="fas fa-plus me-1"></i>Thêm thể loại
                     </button>
                 </div>
@@ -420,14 +443,14 @@
                         <form class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Mã độc giả</label>
-                                <input type="text" class="form-control" placeholder="Nhập mã độc giả">
+                                <input class="form-control" placeholder="Nhập mã độc giả" type="text">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Mã sách</label>
-                                <input type="text" class="form-control" placeholder="Nhập mã sách">
+                                <input class="form-control" placeholder="Nhập mã sách" type="text">
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-success">
+                                <button class="btn btn-success" type="submit">
                                     <i class="fas fa-check me-1"></i>Xác nhận mượn
                                 </button>
                             </div>
@@ -476,7 +499,8 @@
                                 </td>
                                 <td>50,000đ</td>
                                 <td>
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#createPenaltyModal">
+                                    <button class="btn btn-sm btn-danger" data-bs-target="#createPenaltyModal"
+                                            data-bs-toggle="modal">
                                         <i class="fas fa-file-invoice"></i>
                                     </button>
                                 </td>
@@ -519,7 +543,8 @@
                                 </td>
                                 <td>10/10/2025</td>
                                 <td>
-                                    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#payFineModal">
+                                    <button class="btn btn-sm btn-success" data-bs-target="#payFineModal"
+                                            data-bs-toggle="modal">
                                         <i class="fas fa-money-bill"></i>
                                     </button>
                                 </td>
@@ -531,54 +556,6 @@
             </div>
         </div>
 
-        <!-- Membership Tab -->
-        <div class="tab-pane fade" id="membership">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h6 class="mb-0">Nâng cấp gói thành viên</h6>
-                        </div>
-                        <div class="card-body">
-                            <form>
-                                <div class="mb-3">
-                                    <label class="form-label">Mã độc giả</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Gói thành viên</label>
-                                    <select class="form-select">
-                                        <option>Advance (10 sách/tháng - 20,000đ)</option>
-                                        <option>Premium (Không giới hạn - 100,000đ)</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Xác nhận nâng cấp</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h6 class="mb-0">Nạp tiền tài khoản</h6>
-                        </div>
-                        <div class="card-body">
-                            <form>
-                                <div class="mb-3">
-                                    <label class="form-label">Mã độc giả</label>
-                                    <input type="text" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Số tiền nạp</label>
-                                    <input type="number" class="form-control" placeholder="VNĐ">
-                                </div>
-                                <button type="submit" class="btn btn-success">Nạp tiền</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Transactions Tab -->
         <div class="tab-pane fade" id="transactions">
@@ -626,24 +603,24 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="fas fa-book me-2"></i>Thêm sách mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tiêu đề sách *</label>
-                            <input type="text" class="form-control" required>
+                            <input class="form-control" required type="text">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">ISBN</label>
-                            <input type="text" class="form-control">
+                            <input class="form-control" type="text">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tác giả *</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="authorInput">
-                                <button class="btn btn-outline-primary" type="button" id="addAuthorBtn">
+                                <input class="form-control" id="authorInput" type="text">
+                                <button class="btn btn-outline-primary" id="addAuthorBtn" type="button">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -658,11 +635,11 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Số lượng tồn kho *</label>
-                            <input type="number" class="form-control" min="0" required>
+                            <input class="form-control" min="0" required type="number">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nhà xuất bản</label>
-                            <input type="text" class="form-control">
+                            <input class="form-control" type="text">
                         </div>
                         <div class="col-12 mb-3">
                             <label class="form-label">Mô tả</label>
@@ -672,8 +649,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary">Thêm sách</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Hủy</button>
+                <button class="btn btn-primary" type="button">Thêm sách</button>
             </div>
         </div>
     </div>
@@ -698,7 +675,7 @@
                     <div class="mb-3">
                         <label class="form-label">Xác nhận thanh toán</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="paymentConfirm">
+                            <input class="form-check-input" id="paymentConfirm" type="checkbox">
                             <label class="form-check-label" for="paymentConfirm">
                                 Đã nhận tiền tại quầy
                             </label>
@@ -746,12 +723,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Sidebar toggle for mobile
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.querySelector('.sidebar');
         const navLinks = document.querySelectorAll('.nav-link');
 
         navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
+            link.addEventListener('click', function (e) {
                 e.preventDefault();
                 navLinks.forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
@@ -772,7 +749,7 @@
         });
 
         // Add Author functionality
-        document.getElementById('addAuthorBtn').addEventListener('click', function() {
+        document.getElementById('addAuthorBtn').addEventListener('click', function () {
             const authorName = document.getElementById('authorInput').value;
             if (authorName && confirm(`Thêm tác giả "${authorName}"?`)) {
                 // Add author logic here

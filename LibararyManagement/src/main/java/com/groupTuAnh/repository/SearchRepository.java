@@ -1,19 +1,21 @@
 package com.groupTuAnh.repository;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
 import com.groupTuAnh.dto.PageResponse;
 import com.groupTuAnh.dto.ReaderDetailsResponse;
 import com.groupTuAnh.dto.ReaderSearchRequest;
 import com.groupTuAnh.model.Book;
 import com.groupTuAnh.model.Reader;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 public class SearchRepository {
@@ -25,7 +27,7 @@ public class SearchRepository {
 
         if (StringUtils.hasText(request.getKeyword())) {
             query.append(" AND (LOWER(r.userProfile.name) LIKE LOWER(:keyword) ");
-            query.append(" OR LOWER(r.studentCode) LIKE LOWER(:keyword) ");
+            query.append(" OR LOWER(r.studentCode) LIKE LOWER(:keyword)) ");
         }
 
         // Filter by membership
@@ -95,6 +97,7 @@ public class SearchRepository {
                         .phone(r.getUserProfile().getPhone())
                         .name(r.getUserProfile().getName())
                         .code(r.getStudentCode())
+                        .memberShipName(r.getMembership() != null ? r.getMembership().getName() : "N/A")
                         .expiryDate(r.getExpMembership())
                         .balance(r.getBalance())
                         .debt(r.getDebt())
