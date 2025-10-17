@@ -211,6 +211,10 @@
         <a class="nav-link" href="#transactions" data-bs-toggle="pill">
             <i class="fas fa-exchange-alt me-2"></i>Giao dịch
         </a>
+        <a class="nav-link" href="#deposit" data-bs-toggle="pill">
+            <i class="fas fa-wallet me-2"></i>Nạp tiền
+        </a>
+
     </nav>
 </div>
 
@@ -281,11 +285,7 @@
                                         <i class="fas fa-book me-1"></i>Thêm sách
                                     </button>
                                 </div>
-                                <div class="col-6 mb-2">
-                                    <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#confirmBorrowModal">
-                                        <i class="fas fa-hand-holding me-1"></i>Xác nhận mượn
-                                    </button>
-                                </div>
+
                                 <div class="col-6 mb-2">
                                     <button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#membershipUpgradeModal">
                                         <i class="fas fa-user-plus me-1"></i>Nâng cấp thành viên
@@ -449,65 +449,63 @@
                 </div>
             </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const linkBorrow = document.getElementById('link-borrow');
-                    const linkReturn = document.getElementById('link-return');
-                    const paneBorrow = document.getElementById('borrowing-tab');
-                    const paneReturn = document.getElementById('return-tab');
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const linkBorrow = document.getElementById('link-borrow');
+                const linkReturn = document.getElementById('link-return');
+                const paneBorrow = document.getElementById('borrowing-tab');
+                const paneReturn = document.getElementById('return-tab');
 
-                    function showBorrow() {
-                        linkBorrow.classList.add('active');
-                        linkReturn.classList.remove('active');
-                        paneBorrow.style.display = '';
-                        paneReturn.style.display = 'none';
+                function ensureBorrowingTab() {
+                    // nếu có hàm đổi tab cấp dashboard thì chuyển sang tab "borrowing"
+                    if (typeof showTab === 'function') showTab('borrowing');
+                }
+
+                function showBorrow() {
+                    linkBorrow?.classList.add('active');
+                    linkReturn?.classList.remove('active');
+                    if (paneBorrow) paneBorrow.style.display = '';
+                    if (paneReturn) paneReturn.style.display = 'none';
+                }
+
+                function showReturn() {
+                    linkReturn?.classList.add('active');
+                    linkBorrow?.classList.remove('active');
+                    if (paneBorrow) paneBorrow.style.display = 'none';
+                    if (paneReturn) paneReturn.style.display = '';
+                }
+
+                function activateFromHash() {
+                    if (location.hash === '#return') {
+                        ensureBorrowingTab();
+                        showReturn();
+                    } else { // mặc định hoặc #borrow
+                        ensureBorrowingTab();
+                        showBorrow();
                     }
-                    function showReturn() {
-                        linkReturn.classList.add('active');
-                        linkBorrow.classList.remove('active');
-                        paneBorrow.style.display = 'none';
-                        paneReturn.style.display = '';
-                    }
+                }
 
-                    linkBorrow && linkBorrow.addEventListener('click', e => { e.preventDefault(); showBorrow(); });
-                    linkReturn && linkReturn.addEventListener('click', e => { e.preventDefault(); showReturn(); });
-
-                    // Mở đúng tab theo anchor sau redirect
-                    if (location.hash === '#return') showReturn();
-                    else showBorrow();
+                // Click trên 2 tab con
+                linkBorrow?.addEventListener('click', e => {
+                    e.preventDefault();
+                    history.replaceState(null, '', '#borrow');
+                    activateFromHash();
                 });
-                // === ĐOẠN JS ĐIỀU HƯỚNG BORROW/RETURN ===
-                document.addEventListener('DOMContentLoaded', function () {
-                    const linkBorrow = document.getElementById('link-borrow');
-                    const linkReturn = document.getElementById('link-return');
-                    const paneBorrow = document.getElementById('borrowing-tab');
-                    const paneReturn = document.getElementById('return-tab');
 
-                    function showBorrow() {
-                        linkBorrow.classList.add('active');
-                        linkReturn.classList.remove('active');
-                        paneBorrow.style.display = '';
-                        paneReturn.style.display = 'none';
-                    }
-                    function showReturn() {
-                        linkReturn.classList.add('active');
-                        linkBorrow.classList.remove('active');
-                        paneBorrow.style.display = 'none';
-                        paneReturn.style.display = '';
-                    }
-
-                    linkBorrow && linkBorrow.addEventListener('click', e => { e.preventDefault(); showBorrow(); });
-                    linkReturn && linkReturn.addEventListener('click', e => { e.preventDefault(); showReturn(); });
-
-                    if (location.hash === '#borrow' || location.hash === '#return') {
-                        if (typeof showTab === 'function') showTab('borrowing');
-                    }
-
-                    if (location.hash === '#return') showReturn();
-                    else if (location.hash === '#borrow') showBorrow();
-                    else showBorrow();
+                linkReturn?.addEventListener('click', e => {
+                    e.preventDefault();
+                    history.replaceState(null, '', '#return');
+                    activateFromHash();
                 });
-            </script>
+
+                // Khi hash đổi (từ nút/redirect)
+                window.addEventListener('hashchange', activateFromHash);
+
+                // Khởi tạo lần đầu
+                activateFromHash();
+            });
+        </script>
+
 
         <!-- Overdue Tab -->
         <div class="tab-pane fade" id="overdue">
@@ -689,7 +687,65 @@
             </div>
         </div>
     </div>
+
+    <!-- Deposit Tab -->
+    <div class="tab-pane fade" id="deposit">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="fas fa-wallet me-2 text-success"></i>Nạp tiền vào tài khoản</h6>
+            </div>
+            <div class="card-body">
+
+                <!-- Flash message -->
+                <div th:if="${depositMsg}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${depositMsg}">Nạp thành công</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${depositError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${depositError}">Có lỗi xảy ra</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- FORM NẠP TIỀN (dùng đúng form bạn đưa) -->
+                <form action="/librarian/deposit" method="post" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Mã sinh viên</label>
+                        <input type="text" name="studentCode" class="form-control"
+                               placeholder="VD: SE12345" required
+                               th:value="${studentCode}"/>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">ID thủ thư</label>
+                        <input type="number" name="librarianId" class="form-control"
+                               placeholder="VD: 1" required
+                               th:value="${depositDTO != null ? depositDTO.librarianId : null}"/>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Số tiền (đ)</label>
+                        <input type="number" name="amount" class="form-control"
+                               min="1000" step="1000" placeholder="VD: 50000" required
+                               th:value="${depositDTO != null ? depositDTO.amount : null}"/>
+                        <div class="form-text">Tối thiểu 1.000đ; tối đa 10.000.000đ/lần.</div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Ghi chú</label>
+                        <input type="text" name="note" class="form-control"
+                               placeholder="Ghi chú (tuỳ chọn)"
+                               th:value="${depositDTO != null ? depositDTO.note : null}"/>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-money-bill-wave me-2"></i>Xác nhận nạp</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
+
 
 <!-- Modals -->
 <!-- Add Book Modal -->

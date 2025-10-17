@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -24,35 +23,37 @@ public class WalletService {
     private final TransactionRepository transactionRepository;
 
     @Transactional
-    public Transaction deposit(DepositRequest request) {
-        if (request.amount() == null || request.amount() <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than 0");
+    public Transaction deposit(String studentCode, Long librarianId, Double amount, String note) {
+        if (studentCode == null || studentCode.isBlank()) {
+            throw new IllegalArgumentException("Vui lòng nhập mã sinh viên");
+        }
+        if (amount == null || amount <= 0) {
+            throw new IllegalArgumentException("Số tiền nạp phải lớn hơn 0");
+        }
+        if (amount > 10_000_000) {
+            throw new IllegalArgumentException("Số tiền nạp vượt giới hạn 10.000.000đ/lần");
         }
 
-        Reader reader = readerRepository.findById(request.readerId())
-                .orElseThrow(() -> new IllegalArgumentException("Reader not found"));
+        Reader reader = readerRepository.findByStudentCode(studentCode)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy độc giả với mã: " + studentCode));
 
-        Librarian librarian = librarianRepository.findById(request.librarianId())
-                .orElseThrow(() -> new IllegalArgumentException("Librarian not found"));
+        Librarian librarian = librarianRepository.findByAccountAccountId(librarianId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy Librarian"));
 
-        double currentDebt = reader.getDebt();
-        double updatedBalance = reader.getBalance() + request.amount();
-        reader.setBalance(updatedBalance);
-        if (currentDebt > 0) {
-            double payment = Math.min(reader.getBalance(), currentDebt);
-            reader.setDebt(currentDebt - payment);
-            reader.setBalance(reader.getBalance() - payment);
-        }
+        // cập nhật số dư
+        reader.setBalance(reader.getBalance() + amount);
+        readerRepository.save(reader);
 
-        Transaction transaction = Transaction.builder()
+        Transaction tx = Transaction.builder()
                 .reader(reader)
                 .librarian(librarian)
-                .type(TransactionType.DEPOSIT)
-                .amount(request.amount())
-                .date(LocalDate.now())
-                .description(request.note())
+                .type(com.groupTuAnh.enums.TransactionType.DEPOSIT)
+                .amount(amount)                 // 'amount' kiểu double trong entity là OK
+                .date(java.time.LocalDate.now())
+                .description(note)
                 .build();
 
-        return transactionRepository.save(transaction);
+        return transactionRepository.save(tx);
     }
+
 }
