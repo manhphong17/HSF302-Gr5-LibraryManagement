@@ -154,27 +154,27 @@
                 <form th:action="@{${r.recordId} + '/return'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-return" th:disabled="${r.returned}">Trả sách</button>
                 </form>
-<!--                <form th:action="@{${r.recordId} + '/lost'}" method="post" style="display:inline;">-->
-<!--                    <button type="submit" class="btn btn-lost" th:disabled="${r.returned}">Làm mất</button>-->
-<!--                </form>-->
+                <form th:action="@{${r.recordId} + '/lost'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-lost" th:disabled="${r.returned}">Làm mất</button>
+                </form>
             </td>
         </tr>
 
         </tbody>
     </table>
 
-<!--    <div class="modal">-->
-<!--        <h2>Phiếu phạt mất sách</h2>-->
+    <div class="modal">
+        <h2>Phiếu phạt mất sách</h2>
 
-<!--    <div th:if="${penalty != null}">-->
-<!--        <p>Mã độc giả: [[${penalty.reader.studentCode}]]</p>-->
-<!--        <p>Tựa sách: [[${penalty.record.bookItem.book.title}]]</p>-->
-<!--        <p>Tổng tiền phạt: [[${penalty.totalFine}]] đ</p>-->
-<!--    </div>-->
+    <div th:if="${penalty != null}">
+    <p th:text="'Mã độc giả: ' + (penalty.reader != null ? penalty.reader.studentCode : '-')"></p>
+    <p th:text="'Tựa sách: ' + (penalty.record != null ? penalty.record.bookItem.book.title : '-')"></p>
+    <p th:text="'Tổng tiền phạt: ' + penalty.totalFine + ' đ'"></p>
+    </div>
 
-<!--    <div th:if="${penalty == null}">-->
-<!--        <p>Không có thông tin phạt cho bản ghi này.</p>-->
-<!--    </div>-->
+    <div th:if="${penalty == null}">
+        <p>Không có thông tin phạt cho bản ghi này.</p>
+  </div>
 
 
 </div>
