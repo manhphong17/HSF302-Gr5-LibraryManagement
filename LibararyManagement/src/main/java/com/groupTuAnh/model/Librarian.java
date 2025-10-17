@@ -7,20 +7,21 @@ import java.util.List;
 
 @Entity
 @Table(name = "librarians")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class Librarian extends Account {
+@Getter @Setter
+public class Librarian {
 
-    private String staffCode;
+    @Id
+    @Column(name = "account_id")
+    private Long id; // chính là account_id
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @OneToOne
     @JoinColumn(name = "account_id")
-    private UserProfile userProfile;
+    private Account account;
+
+    @Column(name = "staff_code")
+    private String staffCode;
 
     @OneToMany(mappedBy = "librarian", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
-
 }

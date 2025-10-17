@@ -1,0 +1,72 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" th:fragment="navbar">
+    <style>
+        .wallet-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-right: 10px;
+        }
+
+        .wallet-info .text-success {
+            color: #28a745 !important;
+        }
+
+        .wallet-info .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .wallet-info .text-warning {
+            color: #ffc107 !important;
+        }
+
+        .navbar-nav .nav-item .wallet-info {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="fas fa-book me-2"></i>
+            Thư viện số HSF302
+        </a>
+        <button class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- Hiển thị số dư nếu có thông tin reader -->
+                <li class="nav-item" th:if="${reader != null}">
+                    <div class="wallet-info d-flex align-items-center">
+                        <i class="fas fa-wallet me-2 text-warning"></i>
+                        <span class="me-3">
+                            <strong>Số dư:</strong>
+                            <span class="text-success fw-bold" th:text="${#numbers.formatDecimal(balance, 0, 'COMMA', 0, 'POINT')}">0</span> VNĐ
+                        </span>
+                        <span th:if="${debt > 0}" class="text-danger">
+                            <strong>Nợ:</strong> 
+                            <span th:text="${#numbers.formatDecimal(debt, 0, 'COMMA', 0, 'POINT')}">0</span> VNĐ
+                        </span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reader/books">Sách</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reader/borrowed">Sách đã mượn</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reader/penalties">Phiếu phạt</a>
+                </li>
+                <li class="nav-item" th:if="${session.userId != null}">
+                    <a class="nav-link" href="/logout">Đăng xuất</a>
+                </li>
+                <li class="nav-item" th:if="${session.userId == null}">
+                    <a class="nav-link" href="/login">Đăng nhập</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

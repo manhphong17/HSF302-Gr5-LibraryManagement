@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mượn/Trả Sách</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .main-content {
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: white;
+            border-radius: 12px 12px 0 0 !important;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 10px 12px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+        }
+
+        .form-control[readonly] {
+            background-color: #f8fafc;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            padding: 12px 20px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-tabs .nav-link:not(.active) {
+            background: #f8fafc;
+            color: #64748b;
+        }
+
+        .nav-tabs .nav-link:not(.active):hover {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Sidebar -->
+<div th:replace="~{shared/sidebar :: sidebar}"></div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-exchange-alt me-2 text-primary"></i>
+            Mượn/Trả Sách
+        </h2>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${borrowMsg}">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${borrowMsg}"></span>
+        <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${borrowError}">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${borrowError}"></span>
+        <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${returnMsg}">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${returnMsg}"></span>
+        <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${returnError}">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${returnError}"></span>
+        <button class="btn-close" data-bs-dismiss="alert" type="button"></button>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="borrowTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-target="#borrow" data-bs-toggle="tab" id="borrow-tab"
+                    role="tab" type="button">
+                <i class="fas fa-book-reader me-2"></i>Mượn Sách
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-target="#return" data-bs-toggle="tab" id="return-tab" role="tab"
+                    type="button">
+                <i class="fas fa-undo me-2"></i>Trả Sách
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="borrowTabsContent">
+        <!-- Borrow Form -->
+        <div class="tab-pane fade show active" id="borrow" role="tabpanel">
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Thông tin mượn sách
+                </h4>
+
+                <form class="row g-3" method="post" th:action="@{/librarian/borrow}">
+                    <div th:if="${csrf != null}" th:with="csrf=${#request.getAttribute('_csrf')}">
+                        <input th:name="${csrf.parameterName}" th:value="${csrf.token}" type="hidden"/>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-user me-1"></i>Mã độc giả (Student Code) *
+                        </label>
+                        <input class="form-control" name="studentCode" placeholder="Nhập mã sinh viên"
+                               required th:value="${borrowDTO != null} ? ${borrowDTO.studentCode} : ''">
+                        <div class="form-text">Ví dụ: SV001, SV002, ...</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-barcode me-1"></i>Mã vạch sách (Barcode) *
+                        </label>
+                        <input class="form-control" name="barcode" placeholder="Nhập mã vạch sách"
+                               required
+                               th:value="${borrowDTO != null} ? ${borrowDTO.barcode} : ''" type="text">
+                        <div class="form-text">Ví dụ: BC001, BC002, BOOK-1-1, ...</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-user-tie me-1"></i>Thủ thư xử lý
+                        </label>
+                        <input class="form-control" readonly
+                               th:value="${session.userId}" type="text">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-calendar me-1"></i>Ngày đến hạn (Tùy chọn)
+                        </label>
+                        <input class="form-control" name="dueDate"
+                               th:value="${borrowDTO != null} ? ${borrowDTO.dueDate} : ''" type="date">
+                        <div class="form-text">Để trống để sử dụng ngày mặc định</div>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-success btn-lg" type="submit">
+                            <i class="fas fa-check me-2"></i>Xác nhận mượn sách
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Return Form -->
+        <div class="tab-pane fade" id="return" role="tabpanel">
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="fas fa-undo"></i>
+                    Thông tin trả sách
+                </h4>
+
+                <form class="row g-3" method="post" th:action="@{/librarian/return}">
+                    <div th:if="${csrf != null}" th:with="csrf=${#request.getAttribute('_csrf')}">
+                        <input th:name="${csrf.parameterName}" th:value="${csrf.token}" type="hidden"/>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-receipt me-1"></i>Mã phiếu mượn *
+                        </label>
+                        <input class="form-control" min="1" name="recordId" placeholder="Nhập ID phiếu mượn"
+                               required
+                               th:value="${returnDTO != null} ? ${returnDTO.recordId} : ''" type="number">
+                        <div class="form-text">ID của phiếu mượn cần trả</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-user-tie me-1"></i>Thủ thư xử lý
+                        </label>
+                        <input class="form-control" readonly
+                               th:value="${session.userId}" type="text">
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-primary btn-lg" type="submit">
+                            <i class="fas fa-undo me-2"></i>Xác nhận trả sách
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/sidebar.js"></script>
+</body>
+
+</html>

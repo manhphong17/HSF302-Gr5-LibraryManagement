@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .main-content {
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background: #f1f5f9;
+            border: none;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            border-color: #e5e7eb;
+        }
+
+        .btn {
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div th:replace="~{shared/sidebar :: sidebar}"></div>
+
+    <!-- Main -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">All Books</h2>
+            <a class="btn btn-primary" th:href="@{/books/create}">
+                <i class="fa fa-plus"></i> Add New Book
+            </a>
+        </div>
+
+        <table class="table table-striped table-hover align-middle shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Stock Quantity</th>
+                    <th>Categories</th>
+                    <th>Authors</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="b : ${books}">
+                    <td th:text="${b.bookId}"></td>
+                    <td th:text="${b.title}"></td>
+                    <td th:text="${b.stockQuantity}"></td>
+
+                    <td>
+                        <span th:each="c, iter : ${b.categories}">
+                            <span th:text="${c.name}"></span><span th:text="${!iter.last ? ', ' : ''}"></span>
+                        </span>
+                    </td>
+
+                    <td>
+                        <span th:each="a, iter : ${b.authors}">
+                            <span th:text="${a.name}"></span><span th:text="${!iter.last ? ', ' : ''}"></span>
+                        </span>
+                    </td>
+
+                    <td>
+                        <a class="btn btn-sm btn-primary me-2" th:href="@{'/books/edit/' + ${b.bookId}}">
+                            <i class="fa fa-pen"></i> Edit
+                        </a>
+
+                        <a class="btn btn-sm btn-danger me-2"
+                            onclick="return confirm('Are you sure you want to delete this book?')"
+                            th:href="@{'/books/delete/' + ${b.bookId}}" th:if="${!b.isDeleted}">
+                            <i class="fa fa-trash"></i> Delete
+                        </a>
+
+                        <a class="btn btn-sm btn-success" th:href="@{'/books/restore/' + ${b.bookId}}"
+                            th:if="${b.isDeleted}">
+                            <i class="fa fa-rotate-left"></i> Restore
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/sidebar.js"></script>
+</body>
+
+</html>

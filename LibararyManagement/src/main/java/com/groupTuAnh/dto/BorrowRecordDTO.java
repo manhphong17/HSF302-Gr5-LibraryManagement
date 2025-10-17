@@ -7,16 +7,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OverdueRecordDTO {
+@Getter
+@Setter
+public class BorrowRecordDTO {
     private Long recordId;
+    private String studentCode;
     private String bookTitle;
-    private String readerName;
+    private String barCode;
     private LocalDate borrowDate;
     private LocalDate dueDate;
-    private int daysLate;
-    private double totalFine;
-    private boolean isPaid;
-    private double fineSnapShot;
-    private Long penaltyId;
+    private LocalDate returnDate;
+    private boolean isReturned;
+    private boolean isOverdue; // <- tính trong query hoặc logic
 
 }

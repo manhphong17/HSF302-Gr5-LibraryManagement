@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Borrow/Return</title></head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="/css/sidebar.css" rel="stylesheet">
+<body>
+
+<!-- ===== Fragment: Form MƯỢN ===== -->
+
+<div th:replace="~{shared/sidebar :: sidebar}"></div>
+<div th:fragment="borrowForm">
+    <form class="row g-3" method="post" th:action="@{/librarian/borrow}">
+        <div th:if="${csrf != null}" th:with="csrf=${#request.getAttribute('_csrf')}">
+            <input th:name="${csrf.parameterName}" th:value="${csrf.token}" type="hidden"/>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Mã độc giả (studentCode) *</label>
+            <input class="form-control" name="studentCode"
+                   required th:value="${borrowDTO != null} ? ${borrowDTO.studentCode} : ''">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Mã bản sao sách (BookItem ID) *</label>
+            <input class="form-control" min="1" name="bookItemId" required
+                   th:value="${borrowDTO != null} ? ${borrowDTO.bookItemId} : ''" type="number">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Ngày đến hạn (optional)</label>
+            <input class="form-control" name="dueDate" th:value="${borrowDTO != null} ? ${borrowDTO.dueDate} : ''"
+                   type="date">
+        </div>
+
+        <div class="col-12">
+            <button class="btn btn-success" type="submit">Xác nhận mượn</button>
+        </div>
+    </form>
+</div>
+
+<!-- ===== Fragment: Form TRẢ ===== -->
+<div th:fragment="returnForm">
+    <form class="row g-3" method="post" th:action="@{/librarian/return}">
+        <div th:if="${csrf != null}" th:with="csrf=${#request.getAttribute('_csrf')}">
+            <input th:name="${csrf.parameterName}" th:value="${csrf.token}" type="hidden"/>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Mã phiếu mượn *</label>
+            <input class="form-control" min="1" name="recordId" required
+                   th:value="${returnDTO != null} ? ${returnDTO.recordId} : ''" type="number">
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Thủ thư xử lý (ID) *</label>
+            <input class="form-control" min="1" name="librarianId" required
+                   th:value="${returnDTO != null} ? ${returnDTO.librarianId} : ''" type="number">
+        </div>
+
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit">Xác nhận trả</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
