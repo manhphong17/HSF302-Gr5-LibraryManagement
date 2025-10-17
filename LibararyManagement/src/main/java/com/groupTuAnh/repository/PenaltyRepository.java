@@ -14,4 +14,7 @@ public interface PenaltyRepository extends JpaRepository<Penalty,Long> {
     Optional<Penalty> findByRecord(BorrowRecord record);
 
     List<Penalty> findByPenaltyPolicy_Type(PenaltyType type);
+
+    List<Penalty> findByPenaltyPolicy_TypeAndIsPaid(PenaltyType type, boolean isPaid);
+
 }

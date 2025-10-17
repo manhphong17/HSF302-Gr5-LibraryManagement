@@ -199,8 +199,11 @@
         <a class="nav-link" href="#borrowing" data-bs-toggle="pill">
             <i class="fas fa-hand-holding me-2"></i>Mượn/Trả sách
         </a>
-        <a class="nav-link" href="#overdue" data-bs-toggle="pill">
-            <i class="fas fa-exclamation-triangle me-2"></i>Sách quá hạn
+        <a th:href="@{/borrow-records}">>
+            <i class="fas fa-exchange-alt me-2"></i>Danh sách đơn mượn
+        </a>
+        <a th:href="@{/overdue-records}">
+            <i class="fas fa-exclamation-triangle me-2"></i>Đơn quá hạn
         </a>
         <a class="nav-link" href="#penalties" data-bs-toggle="pill">
             <i class="fas fa-file-invoice-dollar me-2"></i>Phiếu phạt
@@ -285,7 +288,11 @@
                                         <i class="fas fa-book me-1"></i>Thêm sách
                                     </button>
                                 </div>
-
+                                <div class="col-6 mb-2">
+                                    <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#confirmBorrowModal">
+                                        <i class="fas fa-hand-holding me-1"></i>Xác nhận mượn
+                                    </button>
+                                </div>
                                 <div class="col-6 mb-2">
                                     <button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#membershipUpgradeModal">
                                         <i class="fas fa-user-plus me-1"></i>Nâng cấp thành viên
@@ -745,7 +752,6 @@
 
 
 </div>
-
 
 <!-- Modals -->
 <!-- Add Book Modal -->
